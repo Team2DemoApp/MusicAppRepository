@@ -17,5 +17,3 @@ connectDB();
 
 app.use(bodyParser.json());
 app.use("/", userRoutes);
-
-app.use("/music", userRoutes);
