@@ -10,8 +10,6 @@ routers.get('/music', musicController.getMusic);
 
 routers.get('/spotifyplaylist', musicController.getPlaylist);
 
-routers.post('/getAuthToken', musicController.getAuthToken);
-
 const playlistController = require('../controllers/playlistController');
 routers.post('/playlist', playlistController.createUserPlaylist);
 

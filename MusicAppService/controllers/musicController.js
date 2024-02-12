@@ -1,6 +1,7 @@
 const axios = require("axios");
-const qs = require("qs");
+const { getSpotifyPlaylist } = require("../services/service.js");
 
+//deezer
 async function getMusic(req, res) {
   const options = {
     method: "GET",
@@ -22,71 +23,16 @@ async function getMusic(req, res) {
 
 //spotify.com
 async function getPlaylist(req, res) {
-  var data = qs.stringify({
-    grant_type: "client_credentials",
-    client_id: "d458e0e2bb3f435aaf47e2cd20e78dcf",
-    client_secret: "22cb731b9f8e4e1299892e3b7d957617"
-  });
-
-  var authOptions = {
-    method: "POST",
-    url: "https://accounts.spotify.com/api/token",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    json: true,
-    data: data
-  };
   try {
-    const response = await axios.request(authOptions);
-    console.log(response.data);
-    console.log("Auth out : " + response.data.access_token);
-    var token = response.data.access_token;
-
-    //get playlist
-    const options = {
-      method: "GET",
-      url: "https://api.spotify.com/v1/playlists/3cEYpjA9oz9GiPac4AsH4n",
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    };
-
-    try {
-      const playlist = await axios.request(options);
-      console.log("playlist.data " + playlist.data);
-      res.send(playlist.data);
-    } catch (error) {
-      console.error("playlist 1 : " + error);
-    }
+    var response = await getSpotifyPlaylist(
+      req.body.client_id,
+      req.body.client_secret
+    );
+    res.send(response);
   } catch (error) {
-    console.error("playlist 2 : " + error);
+    res.send(res.statusCode + ":" + error);
+    console.error("getPlaylist : " + error);
   }
 }
 
-async function getAuthToken(req, res) {
-  var data = qs.stringify({
-    grant_type: "client_credentials",
-    client_id: req.body.client_id, //"d458e0e2bb3f435aaf47e2cd20e78dcf",
-    client_secret: req.body.client_secret // "22cb731b9f8e4e1299892e3b7d957617"
-  });
-
-  var authOptions = {
-    method: "POST",
-    url: "https://accounts.spotify.com/api/token",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    data: data
-  };
-  try {
-    const response = await axios.request(authOptions);
-    console.log(response.data);
-    console.log("Auth out : " + response.data.access_token);
-    res.send(response.data);
-  } catch (error) {
-    console.error("AuthError : " + error);
-  }
-}
-
-module.exports = { getMusic, getPlaylist, getAuthToken };
+module.exports = { getMusic, getPlaylist };

@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const PORT = 5000;
 const connectDB = require("./db"); 
 const app = express()
-const userRoutes = require('./routes/userRoutes');
+const routes = require('./routes/routes');
 
 //output in console
 const server = app.listen(PORT, () => console.log(`Server Connected to port ${PORT}`)) 
@@ -16,9 +16,7 @@ process.on("unhandledRejection", err => {
 connectDB();
 
 app.use(bodyParser.json());
-app.use("/", userRoutes);
-
-app.use(express.static('public'));
+app.use("/", routes);
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
