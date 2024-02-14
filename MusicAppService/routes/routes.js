@@ -12,13 +12,13 @@ routers.delete('/deleteUser/:id',auth, userController.deleteUser);
 const musicController = require('../controllers/musicController');
 routers.get('/music', musicController.getMusic);
 
-routers.get('/spotifyplaylist', musicController.getPlaylist);
+routers.get('/spotifymusiclist', musicController.getMusicList);
 
 const playlistController = require('../controllers/playlistController');
-routers.post('/playlist', playlistController.createUserPlaylist);
+routers.post('/playlist',auth, playlistController.createUserPlayList);
 
-routers.get('/playlist/:email', playlistController.getUserPlaylist);
-routers.put('/playlist/:name', playlistController.updateUserPlaylist);
+routers.get('/playlist',auth, playlistController.getUserPlayList);
+routers.put('/playlist',auth, playlistController.updateUserPlaylist);
 
 const loginController = require('../controllers/loginController');
 routers.post('/login', loginController.loginUser);

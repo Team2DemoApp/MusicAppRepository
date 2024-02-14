@@ -1,12 +1,17 @@
-const Playlist = require("../model/playlist");
+var UserService = require("../services/service");
 
 // Create a new playlist
-async function createUserPlaylist(req, res) {
+async function createUserPlayList(req, res) {
   try {
-    const { id, name, email, songs } = req.body;
-    const playlist = new Playlist({ id, name, email, songs });
-    await playlist.save();
-    res.send(playlist);
+    const playlist = await UserService.createUserPlayList(
+      req.body.name,
+      req.userinfo.email,
+      req.body.songs
+    );
+    res.status(200).json({
+      Message: "User Playlist Created",
+      playlist
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
@@ -14,11 +19,9 @@ async function createUserPlaylist(req, res) {
 }
 
 // Get playlist
-async function getUserPlaylist(req, res) {
+async function getUserPlayList(req, res) {
   try {
-    const playlist = await Playlist.find({
-      email: { $regex: req.params.email }
-    });
+    const playlist = await UserService.getUserPlayList(req.userinfo.email);
     res.send(playlist);
   } catch (error) {
     console.error(error);
@@ -29,29 +32,19 @@ async function getUserPlaylist(req, res) {
 // Edit playlist
 async function updateUserPlaylist(req, res) {
   try {
-      console.log(req.body);
-    const { name } = req.params;
-    const { songs } = req.body;
-    const playlist = await Playlist.findOne({ name: name });
-    if (!playlist) {
-      return next();
-    }
-
-    const updatedPlaylist = await playlist.updateOne(
-      {
-        name: name
-      },
-      {
-        songs: songs
-      },
-      { upsert: true }
+    const playlistData = await UserService.updateUserPlaylist(
+      req.body._id,
+      req.body.name,
+      req.body.songs
     );
-
-    res.send(updatedPlaylist);
+    res.status(200).json({
+      Message: "User Playlist Updated",
+      playlistData
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
 }
 
-module.exports = { createUserPlaylist, getUserPlaylist, updateUserPlaylist };
+module.exports = { createUserPlayList, getUserPlayList, updateUserPlaylist };

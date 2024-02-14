@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
 //Generate JWT Token
 userSchema.methods.generateAuthToken = async function () {
   try {
-   const token = await jwt.sign({email:this.email },process.env.SECRET_KET,{expiresIn:'300s'});
+    const token = await jwt.sign({email:this.email },process.env.SECRET_KET,{expiresIn:'3600s'});
     return token;
   } catch (error) {
     console.log("the error part" + error);

@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { getSpotifyPlaylist } = require("../services/service.js");
+const { getSpotifyMusicList } = require("../services/service.js");
 
 //deezer
 async function getMusic(req, res) {
@@ -22,9 +22,9 @@ async function getMusic(req, res) {
 }
 
 //spotify.com
-async function getPlaylist(req, res) {
+async function getMusicList(req, res) {
   try {
-    var response = await getSpotifyPlaylist(
+    var response = await getSpotifyMusicList(
       req.body.client_id,
       req.body.client_secret
     );
@@ -35,4 +35,4 @@ async function getPlaylist(req, res) {
   }
 }
 
-module.exports = { getMusic, getPlaylist };
+module.exports = { getMusic, getMusicList };

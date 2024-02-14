@@ -1,12 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const playlistSchema = new mongoose.Schema({
-  id: { type: Number, unique: true, auto: 1},
-  name: { type: String, unique: true},
-  email: String,
-  songs: String
+  name: { type: String },
+  email: { type: String },
+  songs: { type: String }
 });
 
-const Playlist = mongoose.model('Playlist', playlistSchema);
+const Playlist = mongoose.model("Playlist", playlistSchema);
 
 module.exports = Playlist;
