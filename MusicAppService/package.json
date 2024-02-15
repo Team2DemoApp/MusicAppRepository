@@ -23,6 +23,7 @@
     "url": "https://github.com/Team2Demo/MusicAppRepository.git"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
     "jest": "^29.7.0"
   }
 }
