@@ -1,0 +1,285 @@
+const { createUser } = require("../services/service");
+const Users = require("../model/user");
+
+const { editUser } = require("../services/service"); 
+const { deleteUser } = require("../services/service");
+const { getUsers } = require("../services/service");
+const { getUsersById } = require("../services/service");
+jest.mock("../model/user"); // Mock the Users model
+
+describe("createUser function", () => {
+  it("should create a user when passwords match", async () => {
+    // Arrange
+    const mockUserData = {
+      username: "testuser",
+      email: "test@example.com",
+      password: "password123",
+      rpassword: "password123",
+    };
+
+    Users.mockImplementationOnce(() => ({
+      save: jest.fn().mockResolvedValueOnce(mockUserData),
+    }));
+
+    // Act
+    const result = await createUser(
+      mockUserData.username,
+      mockUserData.email,
+      mockUserData.password,
+      mockUserData.rpassword
+    );
+
+    // Assert
+    expect(result).toEqual(mockUserData);
+  });
+
+  it('should return "Password is not Match" when passwords do not match', async () => {
+    // Arrange
+    const mockUserData = {
+      username: "testuser",
+      email: "test@example.com",
+      password: "password123",
+      rpassword: "differentpassword",
+    };
+
+    // Act
+    const result = await createUser(
+      mockUserData.username,
+      mockUserData.email,
+      mockUserData.password,
+      mockUserData.rpassword
+    );
+
+    // Assert
+    expect(result).toEqual("Password is not Match");
+  });
+
+  it("should return an error when there is an exception", async () => {
+    // Arrange
+    const mockUserData = {
+      username: "testuser",
+      email: "test@example.com",
+      password: "password123",
+      rpassword: "password123",
+    };
+
+    Users.mockImplementationOnce(() => ({
+      save: jest.fn().mockRejectedValueOnce(new Error("Some error")),
+    }));
+
+    // Act
+    const result = await createUser(
+      mockUserData.username,
+      mockUserData.email,
+      mockUserData.password,
+      mockUserData.rpassword
+    );
+
+    // Assert
+    expect(result).toBeInstanceOf(Error);
+  });
+});
+
+describe("editUser function", () => {
+  it("should edit a user when user is found", async () => {
+    // Arrange
+    const mockUserData = {
+      _id: "mockUserId",
+      username: "testuser",
+      email: "test@example.com",
+      password: "oldPassword",
+      rpassword: "oldPassword",
+    };
+
+    const mockUpdatedUserData = {
+      _id: "mockUserId",
+      username: "updatedUser",
+      email: "test@example.com",
+      password: "newPassword",
+      rpassword: "newPassword",
+    };
+
+    Users.findOne.mockResolvedValueOnce(mockUserData);
+    Users.findByIdAndUpdate.mockResolvedValueOnce(mockUpdatedUserData);
+
+    // Act
+    const result = await editUser(
+      mockUserData._id,
+      mockUpdatedUserData.username,
+      mockUpdatedUserData.email,
+      mockUpdatedUserData.password,
+      mockUpdatedUserData.rpassword
+    );
+
+    // Assert
+    expect(result).toEqual(mockUpdatedUserData);
+  });
+
+  it('should return "Invalid User!!" when user is not found', async () => {
+    // Arrange
+    const mockUserId = "nonexistentUserId";
+    Users.findOne.mockResolvedValueOnce(null);
+
+    // Act
+    const result = await editUser(
+      mockUserId,
+      "newUsername",
+      "newEmail@example.com",
+      "newPassword",
+      "newPassword"
+    );
+
+  });
+
+  it("should return an error when there is an exception", async () => {
+    // Arrange
+    const mockUserData = {
+      _id: "mockUserId",
+      username: "testuser",
+      email: "test@example.com",
+      password: "oldPassword",
+      rpassword: "oldPassword",
+    };
+
+    Users.findOne.mockRejectedValueOnce(new Error("Some error"));
+
+    // Act
+    const result = await editUser(
+      mockUserData._id,
+      "newUsername",
+      "newEmail@example.com",
+      "newPassword",
+      "newPassword"
+    );
+  });
+});
+
+describe("deleteUser function", () => {
+  it("should delete a user when user is found", async () => {
+    // Arrange
+    const mockUserData = {
+      _id: "mockUserId",
+      username: "testuser",
+      email: "test@example.com",
+      password: "password123",
+      rpassword: "password123",
+    };
+
+    Users.findOne.mockResolvedValueOnce(mockUserData);
+    Users.findByIdAndDelete.mockResolvedValueOnce(mockUserData);
+
+    // Act
+    const result = await deleteUser(mockUserData._id);
+
+    // Assert
+    expect(result).toEqual(mockUserData);
+  });
+
+  it('should return "Invalid User!!" when user is not found', async () => {
+    // Arrange
+    const mockUserId = "nonexistentUserId";
+    Users.findOne.mockResolvedValueOnce(null);
+
+    // Act
+    const result = await deleteUser(mockUserId);
+
+    // Assert
+    expect(result).toEqual("Invalid User!!");
+  });
+
+  it("should return an error when there is an exception", async () => {
+    // Arrange
+    const mockUserId = "mockUserId";
+    Users.findOne.mockRejectedValueOnce(new Error("Some error"));
+
+    // Act
+    const result = await deleteUser(mockUserId);
+
+    // Assert
+    expect(result).toBeInstanceOf(Error);
+  });
+});
+
+describe("getUsers function", () => {
+  it("should get all users when there are users in the database", async () => {
+    // Arrange
+    const mockUserData = [
+      { _id: "1", username: "user1", email: "user1@example.com" },
+      { _id: "2", username: "user2", email: "user2@example.com" },
+    ];
+
+    Users.find.mockResolvedValueOnce(mockUserData);
+
+    // Act
+    const result = await getUsers();
+
+    // Assert
+    expect(result).toEqual(mockUserData);
+  });
+
+  it("should return an empty array when there are no users in the database", async () => {
+    // Arrange
+    Users.find.mockResolvedValueOnce([]);
+
+    // Act
+    const result = await getUsers();
+
+    // Assert
+    expect(result).toEqual([]);
+  });
+
+  it("should return an error when there is an exception", async () => {
+    // Arrange
+    Users.find.mockRejectedValueOnce(new Error("Some error"));
+
+    // Act
+    const result = await getUsers();
+
+    // Assert
+    expect(result).toBeInstanceOf(Error);
+  });
+});
+
+describe("getUsersById function", () => {
+  it("should get a user by ID when the user is found", async () => {
+    // Arrange
+    const mockUserId = "mockUserId";
+    const mockUserData = {
+      _id: mockUserId,
+      username: "testuser",
+      email: "test@example.com",
+    };
+
+    Users.findById.mockResolvedValueOnce(mockUserData);
+
+    // Act
+    const result = await getUsersById(mockUserId);
+
+    // Assert
+    expect(result).toEqual(mockUserData);
+  });
+
+  it("should return null when the user is not found", async () => {
+    // Arrange
+    const mockUserId = "nonexistentUserId";
+    Users.findById.mockResolvedValueOnce(null);
+
+    // Act
+    const result = await getUsersById(mockUserId);
+
+    // Assert
+    expect(result).toBeNull();
+  });
+
+  it("should return an error when there is an exception", async () => {
+    // Arrange
+    const mockUserId = "mockUserId";
+    Users.findById.mockRejectedValueOnce(new Error("Some error"));
+
+    // Act
+    const result = await getUsersById(mockUserId);
+
+    // Assert
+    expect(result).toBeInstanceOf(Error);
+  });
+});
