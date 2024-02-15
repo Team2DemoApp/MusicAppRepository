@@ -10,10 +10,15 @@
     "ws": "^8.16.0"
   },
   "scripts": {
+    "build": "npm install && npm run build",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
   "engines": {
     "node": ">=18.16.0 <19.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Team2Demo/MusicAppRepository.git"
   }
 }
