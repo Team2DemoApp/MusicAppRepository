@@ -15,7 +15,6 @@ async function loginUser(req, res) {
       }
     } catch (error) {
       res.status(500).send(error);
-      console.error("loginUser : " + error);
     }
   }
 

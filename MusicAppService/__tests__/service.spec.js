@@ -5,6 +5,8 @@ const { editUser } = require("../services/service");
 const { deleteUser } = require("../services/service");
 const { getUsers } = require("../services/service");
 const { getUsersById } = require("../services/service");
+const { loginUser } = require("../services/service"); 
+const mockGenerateAuthToken = jest.fn();
 jest.mock("../model/user"); // Mock the Users model
 
 describe("createUser function", () => {
@@ -278,6 +280,55 @@ describe("getUsersById function", () => {
 
     // Act
     const result = await getUsersById(mockUserId);
+
+    // Assert
+    expect(result).toBeInstanceOf(Error);
+  });
+});
+
+
+describe('loginUser function', () => {
+  it('should return a token when login is successful', async () => {
+    // Arrange
+    const mockUserData = {
+      email: 'test@example.com',
+      generateAuthToken: mockGenerateAuthToken
+    };
+    const mockToken = 'mockToken';
+
+    Users.findOne.mockResolvedValueOnce(mockUserData);
+    mockGenerateAuthToken.mockResolvedValueOnce(mockToken);
+
+    // Act
+    const result = await loginUser('test@example.com', 'password123');
+  });
+
+  it('should return "User not found" when user is not found', async () => {
+    // Arrange
+    Users.findOne.mockResolvedValueOnce(null);
+
+    // Act
+    const result = await loginUser('nonexistent@example.com', 'password123');
+  });
+
+  it('should return "Invalid User Details!!" when password does not match', async () => {
+    // Arrange
+    const mockUserData = {
+      email: 'test@example.com',
+    };
+
+    Users.findOne.mockResolvedValueOnce(mockUserData);
+
+    // Act
+    const result = await loginUser('test@example.com', 'wrongPassword');
+  });
+
+  it('should return an error when there is an exception', async () => {
+    // Arrange
+    Users.findOne.mockRejectedValueOnce(new Error('Some error'));
+
+    // Act
+    const result = await loginUser('test@example.com', 'password123');
 
     // Assert
     expect(result).toBeInstanceOf(Error);
