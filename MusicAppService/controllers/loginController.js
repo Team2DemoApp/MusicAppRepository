@@ -18,4 +18,24 @@ async function loginUser(req, res) {
     }
   }
 
-  module.exports = { loginUser };
+  async function changePassword(req, res) {
+    try {
+      var updateUser = await loginService.changePassword(
+        req.body.email,
+        req.body.password,
+        req.body.rpassword
+      );
+      if (updateUser.userInfo =='') {
+      res.status(401).json(updateUser);
+      } else
+      {
+      res.status(200).json(updateUser);
+      }
+    } catch (error) {
+      res.status(500).send(error);
+      console.error("changePassword : " + error);
+    }
+}
+ 
+  module.exports = { loginUser,changePassword };
+ 

@@ -22,6 +22,6 @@ routers.put('/favourite',auth, playlistController.setFavourite);
 
 const loginController = require('../controllers/loginController');
 routers.post('/login', loginController.loginUser);
-
+routers.post('/recoverpasswords', loginController.changePassword);
 
 module.exports = routers;

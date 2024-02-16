@@ -5,6 +5,13 @@ const Song = require("../model/song");
 const Users = require("../model/user");
 const bcrypt = require("bcryptjs");
 
+var result = {
+  userInfo:'',
+  message:'',
+  error:''
+}
+
+
 async function getSpotifyAuthToken(client_id, client_secret) {
   var data = qs.stringify({
     grant_type: "client_credentials",
@@ -258,6 +265,42 @@ async function setFavourite(_id, isLike) {
   }
 }
 
+
+async function changePassword(email, password, rpassword) {
+  try {
+          result.message="";
+          result.userInfo = "";
+          result.error="";
+    const userData = await Users.findOne({ email });
+    if (!userData) {
+      result.message="Invalid User";
+      return result;
+    } else {
+      if (password === rpassword) {
+        const newPassword = await bcrypt.hash(password, 10);
+        const newrPassword = await bcrypt.hash(rpassword, 10);
+        const getupdatedusers = await Users.findByIdAndUpdate({_id:userData._id }, {
+          password:newPassword,rpassword:newrPassword },
+          {
+          new: true});
+          result.message="Password Changed";
+          result.userInfo = getupdatedusers;
+          return result;
+       
+      }
+      else
+      {
+       result.message="Password is not Match";
+       return result;
+      }
+    }
+  } catch (error) {
+    result.error=error;
+    result.message="Password is not updated"
+    return result;
+  }
+}
+
 module.exports = {
   getSpotifyMusicList,
   createUserPlayList,
@@ -270,5 +313,6 @@ module.exports = {
   deleteUser,
   getUsers,
   getUsersById,
-  setFavourite
+  setFavourite,
+  changePassword
 };
