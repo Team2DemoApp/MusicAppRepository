@@ -16,9 +16,9 @@ routers.get('/spotifymusiclist', musicController.getMusicList);
 
 const playlistController = require('../controllers/playlistController');
 routers.post('/playlist',auth, playlistController.createUserPlayList);
-
 routers.get('/playlist',auth, playlistController.getUserPlayList);
 routers.put('/playlist',auth, playlistController.updateUserPlaylist);
+routers.put('/favourite',auth, playlistController.setFavourite);
 
 const loginController = require('../controllers/loginController');
 routers.post('/login', loginController.loginUser);

@@ -227,6 +227,37 @@ async function getUsersById(_id) {
   }
 }
 
+// Set like/unlike  
+async function setFavourite(_id, isLike) {
+  try {
+    const songData = await Song.findOne({ _id });
+    if (!songData) {
+      return "Invalid Song";
+    } else {
+      const updateSong = new Song({
+        playlistId: songData.playlistId,
+        song: songData.song,
+        like: isLike
+      });
+      const updatedSong = await Song.findByIdAndUpdate(
+        { _id: _id },
+        {
+          playlistId: updateSong.playlistId,
+          song: updateSong.song,
+          like: updateSong.like
+        },
+        {
+          new: true
+        }
+      );
+      return updatedSong;
+    }
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
 module.exports = {
   getSpotifyMusicList,
   createUserPlayList,
@@ -238,5 +269,6 @@ module.exports = {
   editUser,
   deleteUser,
   getUsers,
-  getUsersById
+  getUsersById,
+  setFavourite
 };

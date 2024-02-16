@@ -47,4 +47,21 @@ async function updateUserPlaylist(req, res) {
   }
 }
 
-module.exports = { createUserPlayList, getUserPlayList, updateUserPlaylist };
+// Edit playlist
+async function setFavourite(req, res) {
+  try {
+    const songData = await UserService.setFavourite(
+      req.body._id,
+      req.body.like
+    );
+    res.status(200).json({
+      Message: "Song's Favourite Updated",
+      songData
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+}
+
+module.exports = { createUserPlayList, getUserPlayList, updateUserPlaylist, setFavourite };
