@@ -8,6 +8,10 @@ routers.get('/getUser/:id',auth, userController.getUsersById);
 routers.post('/createUser', userController.createUser);
 routers.post('/editUser/:id',auth, userController.editUser);
 routers.delete('/deleteUser/:id',auth, userController.deleteUser);
+routers.post('/createAvatarUser/:id',auth, userController.createUserAvatar);
+routers.get('/getUsersAvatarById/:id',auth, userController.getUsersAvatarById);
+routers.post('/UserComment/:id',auth, userController.addUserComment);
+routers.get('/getUserCommentById/:id',auth, userController.getUserCommentById);
 
 const musicController = require('../controllers/musicController');
 routers.get('/music', musicController.getMusic);

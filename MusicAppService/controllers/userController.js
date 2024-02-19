@@ -95,7 +95,6 @@ async function getUsers(req, res) {
       res.status(200).send(userData);
     }
   } catch (error) {
-    //console.log(error);
     res.status(500).send(error);
   }
 }
@@ -116,4 +115,101 @@ async function getUsersById(req, res) {
   }
 }
 
-module.exports = { createUser, editUser, deleteUser, getUsers, getUsersById };
+//User can update avatar
+async function createUserAvatar(req, res){
+  try{
+    const _id = req.params.id;
+    const { avatarUrl } = req.body;
+    const updatedAvatarUser = await UserService.Useravatar(  
+      _id, 
+      avatarUrl
+    );
+    if (!updatedAvatarUser) {
+      res.status(500).json({
+        Message: "Avatar is Not Updated"
+        });
+    }
+    else{
+      res.status(200).json({
+        Message: "Avatar is Updated",
+        updatedAvatarUser
+      });
+    }
+  }
+  catch(err){
+    res.status(500).send(error);
+  }
+}
+
+//Gets User's avatar
+async function getUsersAvatarById(req, res) {
+  try {
+    const _id = req.params.id;
+    const userAvatarData = await UserService.getUsersById(_id);
+    if (!userAvatarData) {
+      res.status(200).json({
+        Message: "No Users"
+      });
+    } else {
+      res.status(200).send(userAvatarData.avatarUrl);
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
+//User can update comment for the song
+async function addUserComment(req, res){
+  try{
+    const _id = req.params.id;
+    const { comment } = req.body;
+    const userComment = await UserService.UserComment(  
+      _id, 
+      comment
+    );
+    if (!userComment) {
+      res.status(500).json({
+        Message: "Comment is Not Updated"
+        });
+    }
+    else{
+      res.status(200).json({
+        Message: "Comment is Updated",
+        userComment
+      });
+    }
+  }
+  catch(err){
+    res.status(500).send(error);
+  }
+}
+
+//User can update comment for the song
+async function getUserCommentById(req, res) {
+  try {
+    const _id = req.params.id;
+    const userCommentData = await UserService.getUserCommentById(_id);
+    if (!userCommentData) {
+      res.status(200).json({
+        Message: "No Users"
+      });
+    } else {
+      res.status(200).send(userCommentData.comment);
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
+
+module.exports = { 
+  createUser,
+  editUser,
+  deleteUser,
+  getUsers,
+  getUsersById,
+  createUserAvatar,
+  getUsersAvatarById,
+  addUserComment,
+  getUserCommentById
+};

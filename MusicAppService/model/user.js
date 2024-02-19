@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  avatarUrl: {
+    type: String
+  },
+  comment: {
+    type : String
+  },
   tokens: [
     {
       token: {

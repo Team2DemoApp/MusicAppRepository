@@ -343,6 +343,60 @@ async function getSongsByPlayListId(playlistId) {
   }
 }
 
+async function createUserAvatar(_id, avatarUrl) {
+  try {
+    const userData = await Users.findById({ _id });
+      const getavataruser = await Users.findByIdAndUpdate(
+        { _id: _id },
+        {
+          avatarUrl : avatarUrl
+        },
+        {
+          new: true
+        }
+      );
+      return getavataruser;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function getUsersAvatarById(_id) {
+  try {
+    const userData = await Users.findById({ _id });
+    return userData.avatarUrl;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function addUserComment(_id, comment) {
+  try {
+    const userData = await Users.findById({ _id });
+      const comments = await Users.findByIdAndUpdate(
+        { _id: _id },
+        {
+          comment : comment
+        },
+        {
+          new: true
+        }
+      );
+      return comments;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function getUserCommentById(_id) {
+  try {
+    const usercommentData = await Users.findById({ _id });
+    return usercommentData.comment;
+  } catch (error) {
+    return error;
+  }
+}
+
 module.exports = {
   getSpotifyMusicList,
   createUserPlayList,
@@ -357,5 +411,9 @@ module.exports = {
   getUsersById,
   setFavourite,
   changePassword,
-  getSongsByPlayListId
+  getSongsByPlayListId,
+  createUserAvatar,
+  getUsersAvatarById,
+  addUserComment,
+  getUserCommentById,
 };
