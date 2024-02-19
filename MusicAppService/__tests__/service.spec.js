@@ -6,6 +6,12 @@ const { deleteUser } = require("../services/service");
 const { getUsers } = require("../services/service");
 const { getUsersById } = require("../services/service");
 const { loginUser } = require("../services/service"); 
+
+var resultMock = {
+  userInfo:'',
+  message:'',
+  error:''
+}
 const mockGenerateAuthToken = jest.fn();
 jest.mock("../model/user"); // Mock the Users model
 
@@ -32,7 +38,7 @@ describe("createUser function", () => {
     );
 
     // Assert
-    expect(result).toEqual(mockUserData);
+    expect(result.userInfo).toEqual(mockUserData);
   });
 
   it('should return "Password is not Match" when passwords do not match', async () => {
@@ -53,7 +59,7 @@ describe("createUser function", () => {
     );
 
     // Assert
-    expect(result).toEqual("Password is not Match");
+    expect(result.message).toEqual("Password is not Match");
   });
 
   it("should return an error when there is an exception", async () => {
@@ -78,7 +84,7 @@ describe("createUser function", () => {
     );
 
     // Assert
-    expect(result).toBeInstanceOf(Error);
+    expect(result.error).toBeInstanceOf(Error);
   });
 });
 
@@ -295,9 +301,9 @@ describe('loginUser function', () => {
       generateAuthToken: mockGenerateAuthToken
     };
     const mockToken = 'mockToken';
-
+    resultMock.userInfo = mockToken;
     Users.findOne.mockResolvedValueOnce(mockUserData);
-    mockGenerateAuthToken.mockResolvedValueOnce(mockToken);
+    mockGenerateAuthToken.mockResolvedValueOnce(resultMock.userInfo);
 
     // Act
     const result = await loginUser('test@example.com', 'password123');
@@ -325,12 +331,13 @@ describe('loginUser function', () => {
 
   it('should return an error when there is an exception', async () => {
     // Arrange
+    
     Users.findOne.mockRejectedValueOnce(new Error('Some error'));
-
+    
     // Act
     const result = await loginUser('test@example.com', 'password123');
-
+    
     // Assert
-    expect(result).toBeInstanceOf(Error);
+     expect(result.error).toBeInstanceOf(Error);
   });
 });
