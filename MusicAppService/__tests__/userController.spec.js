@@ -191,7 +191,6 @@ describe('editUser', () => {
     });
   });
 
-
   describe('deleteUser', () => {
     it('should delete a user and return a success message', async () => {
       // Mocking UserService.deleteUser to return a sample deleted user

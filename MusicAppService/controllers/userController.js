@@ -4,18 +4,25 @@ var UserService = require("../services/service");
 async function createUser(req, res) {
   try {
     const { username, email, password, rpassword } = req.body;
-    const createduser = await UserService.createUser(
+    var createduser = await UserService.createUser(
       username,
       email,
       password,
       rpassword
     );
-    res.status(200).json({
+    if(createduser.userInfo =='')
+    {
+      res.status(401).json({
+        "Message" : createduser.message,
+        "Error":createduser.error
+      });
+    }
+    else{ res.status(200).json({
       Message: "User Created!!",
-      createduser
-    });
+      userCreated: createduser.userInfo
+    });}
+     
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 }
@@ -49,7 +56,6 @@ async function editUser(req, res) {
       }
     }
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 }
@@ -75,7 +81,6 @@ async function deleteUser(req, res) {
       }
     }
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 }
@@ -90,7 +95,7 @@ async function getUsers(req, res) {
       res.status(200).send(userData);
     }
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     res.status(500).send(error);
   }
 }
@@ -107,7 +112,6 @@ async function getUsersById(req, res) {
       res.status(200).send(userData);
     }
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 }

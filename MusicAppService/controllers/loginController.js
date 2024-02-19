@@ -7,14 +7,14 @@ async function loginUser(req, res) {
         req.body.email,
         req.body.password
       );
-      if (!token) {
-      res.status(401).json({message:"Token Not Generated!!"});
+      if (!token.userInfo) {
+      res.status(401).json({"message":token.message});
       } else 
       {
-      res.status(200).json({token});
+      res.status(200).json({"token":token.userInfo});
       }
     } catch (error) {
-      res.status(500).send(error);
+        res.status(500).send(error);
     }
   }
 
@@ -33,7 +33,6 @@ async function loginUser(req, res) {
       }
     } catch (error) {
       res.status(500).send(error);
-      console.error("changePassword : " + error);
     }
 }
  

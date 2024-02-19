@@ -6,10 +6,10 @@ const Users = require("../model/user");
 const bcrypt = require("bcryptjs");
 
 var result = {
-  userInfo: "",
-  message: "",
-  error: ""
-};
+  userInfo:'',
+  message:'',
+  error:''
+}
 
 async function getSpotifyAuthToken(client_id, client_secret) {
   var data = qs.stringify({
@@ -131,26 +131,35 @@ async function createPlaylistSong(playlistId, playlistSongs) {
 
 async function loginUser(email, password) {
   try {
+    result.message="";
+    result.userInfo = "";
+    result.error="";
     const userData = await Users.findOne({ email });
-    const isMatch = await bcrypt.compare(password, userData.password);
-    const userToken = await userData.generateAuthToken();
-
     if (!userData) {
-      return "User not found";
+      result.message="User not found";
+      return result;
     } else {
-      if (isMatch) {
-        return userToken;
+      const isMatch = await bcrypt.compare(password, userData.password);
+      const userToken = await userData.generateAuthToken();
+      if (isMatch) {  
+        result.userInfo=userToken;
+        return result;
       } else {
-        return "Invalid User Details!!";
+        result.message="Invalid User Details!!";
+        return result;
       }
     }
   } catch (error) {
-    return error;
+    result.error=error;
+    return result;
   }
 }
 
 async function createUser(username, email, password, rpassword) {
   try {
+    result.message="";
+    result.userInfo = "";
+    result.error="";
     if (password === rpassword) {
       const userRegister = new Users({
         username: username,
@@ -159,12 +168,15 @@ async function createUser(username, email, password, rpassword) {
         rpassword: rpassword
       });
       const registered = await userRegister.save();
-      return registered;
+      result.userInfo=registered;
+      return result;
     } else {
-      return "Password is not Match";
+      result.message="Password is not Match";
+      return result;
     }
   } catch (error) {
-    return error;
+    result.error=error
+    return result;
   }
 }
 
@@ -174,12 +186,14 @@ async function editUser(_id, username, email, password, rpassword) {
     if (!userData) {
       return "Invalid User!!";
     } else {
+      if(password === rpassword){
       const editUser = new Users({
         username: username,
         email: userData.email,
         password: password,
         rpassword: rpassword
       });
+     
       password = await bcrypt.hash(password, 10);
       rpassword = await bcrypt.hash(rpassword, 10);
       const getupdatedusers = await Users.findByIdAndUpdate(
@@ -194,6 +208,7 @@ async function editUser(_id, username, email, password, rpassword) {
         }
       );
       return getupdatedusers;
+    }
     }
   } catch (error) {
     return error;
