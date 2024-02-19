@@ -10,6 +10,7 @@ var result = {
   message:'',
   error:''
 }
+
 async function getSpotifyAuthToken(client_id, client_secret) {
   var data = qs.stringify({
     grant_type: "client_credentials",
@@ -247,7 +248,7 @@ async function getUsersById(_id) {
   }
 }
 
-// Set like/unlike  
+// Set like/unlike
 async function setFavourite(_id, isLike) {
   try {
     const songData = await Song.findOne({ _id });
@@ -278,39 +279,67 @@ async function setFavourite(_id, isLike) {
   }
 }
 
-
 async function changePassword(email, password, rpassword) {
   try {
-          result.message="";
-          result.userInfo = "";
-          result.error="";
+    result.message = "";
+    result.userInfo = "";
+    result.error = "";
     const userData = await Users.findOne({ email });
     if (!userData) {
-      result.message="Invalid User";
+      result.message = "Invalid User";
       return result;
     } else {
       if (password === rpassword) {
         const newPassword = await bcrypt.hash(password, 10);
         const newrPassword = await bcrypt.hash(rpassword, 10);
-        const getupdatedusers = await Users.findByIdAndUpdate({_id:userData._id }, {
-          password:newPassword,rpassword:newrPassword },
+        const getupdatedusers = await Users.findByIdAndUpdate(
+          { _id: userData._id },
           {
-          new: true});
-          result.message="Password Changed";
-          result.userInfo = getupdatedusers;
-          return result;
-       
-      }
-      else
-      {
-       result.message="Password is not Match";
-       return result;
+            password: newPassword,
+            rpassword: newrPassword
+          },
+          {
+            new: true
+          }
+        );
+        result.message = "Password Changed";
+        result.userInfo = getupdatedusers;
+        return result;
+      } else {
+        result.message = "Password is not Match";
+        return result;
       }
     }
   } catch (error) {
-    result.error=error;
-    result.message="Password is not updated"
+    result.error = error;
+    result.message = "Password is not updated";
     return result;
+  }
+}
+
+// Get playlist songs
+async function getSongsByPlayListId(playlistId) {
+  try {
+    let songsData = [];
+    const songs = await Song.find({
+      $where: "this.playlistId === '" + playlistId + "'"
+    });
+
+    const _id = playlistId;
+    const playlistName = await Playlist.findOne({ _id });
+    songs.forEach(function(value) {
+      songsData.push({
+        playlistId: value.playlistId,
+        playlistName: playlistName["name"],
+        songId: value._id.toString(),
+        song: value.song,
+        like: value.like
+      });
+    });
+    return songsData;
+  } catch (error) {
+    console.error(error);
+    return error;
   }
 }
 
@@ -327,5 +356,6 @@ module.exports = {
   getUsers,
   getUsersById,
   setFavourite,
-  changePassword
+  changePassword,
+  getSongsByPlayListId
 };

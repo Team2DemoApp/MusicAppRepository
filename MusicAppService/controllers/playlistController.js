@@ -64,4 +64,22 @@ async function setFavourite(req, res) {
   }
 }
 
-module.exports = { createUserPlayList, getUserPlayList, updateUserPlaylist, setFavourite };
+async function getSongsByPlayListId(req, res) {
+  try {
+    songs = await UserService.getSongsByPlayListId(req.body.playlistId);
+    res.status(200).json({
+      songs
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+}
+
+module.exports = {
+  createUserPlayList,
+  getUserPlayList,
+  updateUserPlaylist,
+  setFavourite,
+  getSongsByPlayListId
+};
