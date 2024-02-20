@@ -4,7 +4,8 @@ const songSchema = new mongoose.Schema({
   songId: { type: Number, unique: true, auto: 1 },
   playlistId: { type: String },
   song: { type: String },
-  like: { type: Boolean }
+  like: { type: Boolean },
+  comment : {type: String}
 });
 
 const Song = mongoose.model("Song", songSchema);

@@ -10,18 +10,17 @@ async function createUser(req, res) {
       password,
       rpassword
     );
-    if(createduser.userInfo =='')
-    {
+    if (createduser.userInfo == "") {
       res.status(401).json({
-        "Message" : createduser.message,
-        "Error":createduser.error
+        Message: createduser.message,
+        Error: createduser.error
+      });
+    } else {
+      res.status(200).json({
+        Message: "User Created!!",
+        userCreated: createduser.userInfo
       });
     }
-    else{ res.status(200).json({
-      Message: "User Created!!",
-      userCreated: createduser.userInfo
-    });}
-     
   } catch (error) {
     res.status(500).send(error);
   }
@@ -116,4 +115,50 @@ async function getUsersById(req, res) {
   }
 }
 
-module.exports = { createUser, editUser, deleteUser, getUsers, getUsersById };
+//User can update avatar
+async function createAvatar(req, res) {
+  try {
+    const _id = req.params.id;
+    const { avatarUrl } = req.body;
+    const updatedAvatarUser = await UserService.createAvatar(_id, avatarUrl);
+    if (!updatedAvatarUser) {
+      res.status(500).json({
+        Message: "Avatar is Not Updated"
+      });
+    } else {
+      res.status(200).json({
+        Message: "Avatar is Updated",
+        updatedAvatarUser
+      });
+    }
+  } catch (err) {
+    res.status(500).send(error);
+  }
+}
+
+//Gets User's avatar
+async function getAvatar(req, res) {
+  try {
+    const _id = req.params.id;
+    const userAvatarData = await UserService.getAvatar(_id);
+    if (!userAvatarData) {
+      res.status(401).json({
+        Message: "No Users"
+      });
+    } else {
+      res.status(200).send({"Avatar": userAvatarData.avatarUrl});
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
+module.exports = {
+  createUser,
+  editUser,
+  deleteUser,
+  getUsers,
+  getUsersById,
+  createAvatar,
+  getAvatar
+};
