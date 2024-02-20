@@ -6,9 +6,9 @@ const Users = require("../model/user");
 const bcrypt = require("bcryptjs");
 
 var result = {
-  userInfo:'',
-  message:'',
-  error:''
+  userInfo: '',
+  message: '',
+  error: ''
 }
 
 async function getSpotifyAuthToken(client_id, client_secret) {
@@ -117,7 +117,7 @@ async function createPlaylistSong(playlistId, playlistSongs) {
   try {
     var songs = playlistSongs.split(",");
     let data = [];
-    songs.forEach(function(value) {
+    songs.forEach(function (value) {
       data.push({ playlistId: playlistId, song: value, like: false });
     });
 
@@ -131,35 +131,35 @@ async function createPlaylistSong(playlistId, playlistSongs) {
 
 async function loginUser(email, password) {
   try {
-    result.message="";
+    result.message = "";
     result.userInfo = "";
-    result.error="";
+    result.error = "";
     const userData = await Users.findOne({ email });
     if (!userData) {
-      result.message="User not found";
+      result.message = "User not found";
       return result;
     } else {
       const isMatch = await bcrypt.compare(password, userData.password);
       const userToken = await userData.generateAuthToken();
-      if (isMatch) {  
-        result.userInfo=userToken;
+      if (isMatch) {
+        result.userInfo = userToken;
         return result;
       } else {
-        result.message="Invalid User Details!!";
+        result.message = "Invalid User Details!!";
         return result;
       }
     }
   } catch (error) {
-    result.error=error;
+    result.error = error;
     return result;
   }
 }
 
 async function createUser(username, email, password, rpassword) {
   try {
-    result.message="";
+    result.message = "";
     result.userInfo = "";
-    result.error="";
+    result.error = "";
     if (password === rpassword) {
       const userRegister = new Users({
         username: username,
@@ -168,14 +168,14 @@ async function createUser(username, email, password, rpassword) {
         rpassword: rpassword
       });
       const registered = await userRegister.save();
-      result.userInfo=registered;
+      result.userInfo = registered;
       return result;
     } else {
-      result.message="Password is not Match";
+      result.message = "Password is not Match";
       return result;
     }
   } catch (error) {
-    result.error=error
+    result.error = error
     return result;
   }
 }
@@ -186,29 +186,29 @@ async function editUser(_id, username, email, password, rpassword) {
     if (!userData) {
       return "Invalid User!!";
     } else {
-      if(password === rpassword){
-      const editUser = new Users({
-        username: username,
-        email: userData.email,
-        password: password,
-        rpassword: rpassword
-      });
-     
-      password = await bcrypt.hash(password, 10);
-      rpassword = await bcrypt.hash(rpassword, 10);
-      const getupdatedusers = await Users.findByIdAndUpdate(
-        { _id: _id },
-        {
-          username: editUser.username,
+      if (password === rpassword) {
+        const editUser = new Users({
+          username: username,
+          email: userData.email,
           password: password,
           rpassword: rpassword
-        },
-        {
-          new: true
-        }
-      );
-      return getupdatedusers;
-    }
+        });
+
+        password = await bcrypt.hash(password, 10);
+        rpassword = await bcrypt.hash(rpassword, 10);
+        const getupdatedusers = await Users.findByIdAndUpdate(
+          { _id: _id },
+          {
+            username: editUser.username,
+            password: password,
+            rpassword: rpassword
+          },
+          {
+            new: true
+          }
+        );
+        return getupdatedusers;
+      }
     }
   } catch (error) {
     return error;
@@ -327,7 +327,7 @@ async function getSongsByPlayListId(playlistId) {
 
     const _id = playlistId;
     const playlistName = await Playlist.findOne({ _id });
-    songs.forEach(function(value) {
+    songs.forEach(function (value) {
       songsData.push({
         playlistId: value.playlistId,
         playlistName: playlistName["name"],
@@ -343,25 +343,27 @@ async function getSongsByPlayListId(playlistId) {
   }
 }
 
-async function createUserAvatar(_id, avatarUrl) {
+// creates a avatar
+async function createAvatar(_id, avatarUrl) {
   try {
     const userData = await Users.findById({ _id });
-      const getavataruser = await Users.findByIdAndUpdate(
-        { _id: _id },
-        {
-          avatarUrl : avatarUrl
-        },
-        {
-          new: true
-        }
-      );
-      return getavataruser;
+    const getavataruser = await Users.findByIdAndUpdate(
+      { _id: _id },
+      {
+        avatarUrl: avatarUrl
+      },
+      {
+        new: true
+      }
+    );
+    return getavataruser;
   } catch (error) {
     return error;
   }
 }
 
-async function getUsersAvatarById(_id) {
+//get avatar
+async function getAvatar(_id) {
   try {
     const userData = await Users.findById({ _id });
     return userData.avatarUrl;
@@ -370,29 +372,37 @@ async function getUsersAvatarById(_id) {
   }
 }
 
-async function addUserComment(_id, comment) {
+//add comment to playlist
+async function addComment(email, comment) {
   try {
-    const userData = await Users.findById({ _id });
-      const comments = await Users.findByIdAndUpdate(
-        { _id: _id },
-        {
-          comment : comment
-        },
-        {
-          new: true
-        }
-      );
-      return comments;
+    const playlist = await Playlist.find({
+      $where: "this.email === '" + email + "'"
+    });
+    // const userData = await Users.getUserPlayList({ _id });
+    const comments = await Users.findByIdAndUpdate(
+      { email: email },
+      {
+        comment: comment
+      },
+      {
+        new: true
+      }
+    );
+    return comments;
   } catch (error) {
     return error;
   }
 }
 
-async function getUserCommentById(_id) {
+// Get playlist comment
+async function getComment(email) {
   try {
-    const usercommentData = await Users.findById({ _id });
-    return usercommentData.comment;
+    const playlist = await Playlist.find({
+      $where: "this.email === '" + email + "'"
+    });
+    return playlist.comment;
   } catch (error) {
+    console.error(error);
     return error;
   }
 }
@@ -412,8 +422,8 @@ module.exports = {
   setFavourite,
   changePassword,
   getSongsByPlayListId,
-  createUserAvatar,
-  getUsersAvatarById,
-  addUserComment,
-  getUserCommentById,
+  createAvatar,
+  getAvatar,
+  addComment,
+  getComment
 };

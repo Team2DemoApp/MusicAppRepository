@@ -8,10 +8,8 @@ routers.get('/getUser/:id',auth, userController.getUsersById);
 routers.post('/createUser', userController.createUser);
 routers.post('/editUser/:id',auth, userController.editUser);
 routers.delete('/deleteUser/:id',auth, userController.deleteUser);
-routers.post('/createAvatarUser/:id',auth, userController.createUserAvatar);
-routers.get('/getUsersAvatarById/:id',auth, userController.getUsersAvatarById);
-routers.post('/UserComment/:id',auth, userController.addUserComment);
-routers.get('/getUserCommentById/:id',auth, userController.getUserCommentById);
+routers.post('/createAvatar/:id',auth, userController.createAvatar);
+routers.get('/getAvatar/:id',auth, userController.getAvatar);
 
 const musicController = require('../controllers/musicController');
 routers.get('/music', musicController.getMusic);
@@ -24,6 +22,9 @@ routers.get('/playlist',auth, playlistController.getUserPlayList);
 routers.put('/playlist',auth, playlistController.updateUserPlaylist);
 routers.put('/favourite',auth, playlistController.setFavourite);
 routers.get('/songs',auth, playlistController.getSongsByPlayListId);
+routers.post('/addComment/:id',auth, playlistController.addComment);
+routers.get('/getComment/:id',auth, playlistController.getComment);
+
 
 const loginController = require('../controllers/loginController');
 routers.post('/login', loginController.loginUser);

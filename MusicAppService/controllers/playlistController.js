@@ -76,10 +76,57 @@ async function getSongsByPlayListId(req, res) {
   }
 }
 
+//Add comment
+async function addComment(req, res) {
+  try {
+    const _id = req.params.id;
+    const { comment } = req.body;
+    const userComment = await UserService.addComment(
+      _id,
+      comment
+    );
+    if (!userComment) {
+      res.status(401).json({
+        Message: "Comment is Not Updated"
+      });
+    }
+    else {
+      res.status(200).json({
+        Message: "Comment is Updated",
+        userComment
+      });
+    }
+  }
+  catch (err) {
+    res.status(500).send(error);
+  }
+}
+
+//Gets comments
+async function getComment(req, res) {
+  try {
+    const playlist = await UserService.getUserPlayList(req.userinfo.email);
+    res.send(playlist.comment);
+    // const _id = req.params.id;
+    // const userCommentData = await UserService.getComment(_id);
+    // if (!userCommentData) {
+    //   res.status(401).json({
+    //     Message: "No Users"
+    //   });
+    // } else {
+    //   res.status(200).send(userCommentData.comment);
+    // }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
 module.exports = {
   createUserPlayList,
   getUserPlayList,
   updateUserPlaylist,
   setFavourite,
-  getSongsByPlayListId
+  getSongsByPlayListId,
+  addComment,
+  getComment
 };

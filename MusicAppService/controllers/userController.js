@@ -116,11 +116,11 @@ async function getUsersById(req, res) {
 }
 
 //User can update avatar
-async function createUserAvatar(req, res){
+async function createAvatar(req, res){
   try{
     const _id = req.params.id;
     const { avatarUrl } = req.body;
-    const updatedAvatarUser = await UserService.Useravatar(  
+    const updatedAvatarUser = await UserService.createAvatar(  
       _id, 
       avatarUrl
     );
@@ -142,59 +142,16 @@ async function createUserAvatar(req, res){
 }
 
 //Gets User's avatar
-async function getUsersAvatarById(req, res) {
+async function getAvatar(req, res) {
   try {
     const _id = req.params.id;
-    const userAvatarData = await UserService.getUsersById(_id);
+    const userAvatarData = await UserService.getAvatar(_id);
     if (!userAvatarData) {
-      res.status(200).json({
+      res.status(401).json({
         Message: "No Users"
       });
     } else {
       res.status(200).send(userAvatarData.avatarUrl);
-    }
-  } catch (error) {
-    res.status(500).send(error);
-  }
-}
-
-//User can update comment for the song
-async function addUserComment(req, res){
-  try{
-    const _id = req.params.id;
-    const { comment } = req.body;
-    const userComment = await UserService.UserComment(  
-      _id, 
-      comment
-    );
-    if (!userComment) {
-      res.status(500).json({
-        Message: "Comment is Not Updated"
-        });
-    }
-    else{
-      res.status(200).json({
-        Message: "Comment is Updated",
-        userComment
-      });
-    }
-  }
-  catch(err){
-    res.status(500).send(error);
-  }
-}
-
-//User can update comment for the song
-async function getUserCommentById(req, res) {
-  try {
-    const _id = req.params.id;
-    const userCommentData = await UserService.getUserCommentById(_id);
-    if (!userCommentData) {
-      res.status(200).json({
-        Message: "No Users"
-      });
-    } else {
-      res.status(200).send(userCommentData.comment);
     }
   } catch (error) {
     res.status(500).send(error);
@@ -208,8 +165,6 @@ module.exports = {
   deleteUser,
   getUsers,
   getUsersById,
-  createUserAvatar,
-  getUsersAvatarById,
-  addUserComment,
-  getUserCommentById
+  createAvatar,
+  getAvatar
 };

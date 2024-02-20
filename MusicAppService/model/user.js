@@ -25,9 +25,6 @@ const userSchema = new mongoose.Schema({
   avatarUrl: {
     type: String
   },
-  comment: {
-    type : String
-  },
   tokens: [
     {
       token: {
