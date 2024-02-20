@@ -8,6 +8,8 @@ routers.get('/getUser/:id',auth, userController.getUsersById);
 routers.post('/createUser', userController.createUser);
 routers.post('/editUser/:id',auth, userController.editUser);
 routers.delete('/deleteUser/:id',auth, userController.deleteUser);
+routers.post('/createAvatar/:id',auth, userController.createAvatar);
+routers.get('/getAvatar/:id',auth, userController.getAvatar);
 
 const musicController = require('../controllers/musicController');
 routers.get('/music', musicController.getMusic);
@@ -20,6 +22,7 @@ routers.get('/playlist',auth, playlistController.getUserPlayList);
 routers.put('/playlist',auth, playlistController.updateUserPlaylist);
 routers.put('/favourite',auth, playlistController.setFavourite);
 routers.get('/songs',auth, playlistController.getSongsByPlayListId);
+routers.post('/addComment',auth, playlistController.addComment);
 
 const loginController = require('../controllers/loginController');
 routers.post('/login', loginController.loginUser);

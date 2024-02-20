@@ -76,10 +76,26 @@ async function getSongsByPlayListId(req, res) {
   }
 }
 
+async function addComment(req, res) {
+  try {
+    const commentData = await UserService.addComment(
+      req.body._id,
+      req.body.comment
+    );
+    res.status(200).json({
+      Message: "User's comment is updated",
+      commentData
+    });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
 module.exports = {
   createUserPlayList,
   getUserPlayList,
   updateUserPlaylist,
   setFavourite,
-  getSongsByPlayListId
+  getSongsByPlayListId,
+  addComment
 };

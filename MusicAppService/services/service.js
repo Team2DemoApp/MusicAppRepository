@@ -343,6 +343,64 @@ async function getSongsByPlayListId(playlistId) {
   }
 }
 
+// creates a avatar
+async function createAvatar(_id, avatarUrl) {
+  try {
+    const userData = await Users.findById({ _id });
+    const getavataruser = await Users.findByIdAndUpdate(
+      { _id: _id },
+      {
+        avatarUrl: avatarUrl
+      },
+      {
+        new: true
+      }
+    );
+    return getavataruser;
+  } catch (error) {
+    return error;
+  }
+}
+
+//get avatar
+async function getAvatar(_id) {
+  try {
+    const useravatar = await Users.findById({ _id });
+    return useravatar;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function addComment(_id, comment) {
+  try {
+    const songData = await Song.findOne({ _id });
+    if (!songData) {
+      return "Invalid Song";
+    } else {
+      const updateSong = new Song({
+        playlistId: songData.playlistId,
+        song: songData.song,
+        comment: comment
+      });
+      const userComment = await Song.findByIdAndUpdate(
+        { _id: _id },
+        {
+          playlistId: updateSong.playlistId,
+          song: updateSong.song,
+          comment: comment
+        },
+        {
+          new: true
+        }
+      );
+      return userComment;
+    }
+  } catch (error) {
+    return error;
+  }
+}
+
 module.exports = {
   getSpotifyMusicList,
   createUserPlayList,
@@ -357,5 +415,8 @@ module.exports = {
   getUsersById,
   setFavourite,
   changePassword,
-  getSongsByPlayListId
+  getSongsByPlayListId,
+  createAvatar,
+  getAvatar,
+  addComment
 };
