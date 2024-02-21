@@ -1,5 +1,5 @@
 const { createUserPlayList } = require('../controllers/playlistController'); 
-const UserService = require("../services/service"); 
+const UserService = require("../services/playlistService"); 
 const { getUserPlayList } = require('../controllers/playlistController');
 const { updateUserPlaylist } = require('../controllers/playlistController'); 
 const mockRequest1 = (userinfo) => ({ userinfo });
@@ -18,7 +18,7 @@ const mockResponse = () => {
   return res;
 };
 
-jest.mock("../services/service"); // Mock the UserService
+jest.mock("../services/playlistService"); // Mock the playlist service
 
 describe('createUserPlayList function', () => {
   it('should create a user playlist and return success message', async () => {

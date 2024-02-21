@@ -1,4 +1,4 @@
-var UserService = require("../services/service");
+var UserService = require("../services/userService");
 
 // Create a new user
 async function createUser(req, res) {
@@ -17,7 +17,7 @@ async function createUser(req, res) {
       });
     } else {
       res.status(200).json({
-        Message: "User Created!!",
+        Message: "User created!!",
         userCreated: createduser.userInfo
       });
     }
@@ -28,29 +28,28 @@ async function createUser(req, res) {
 
 async function editUser(req, res) {
   try {
-    const _id = req.params.id;
-    const { username, email, password, rpassword } = req.body;
+    const _id = req.body.id;
+    const { username, password, rpassword } = req.body;
     const updatedUser = await UserService.editUser(
       _id,
       username,
-      email,
       password,
       rpassword
     );
     if (!updatedUser) {
       res.status(401).json({
-        Message: "User Not Updated",
+        Message: "User details not updated",
         updatedUser
       });
     } else {
-      if (updatedUser != "Invalid User!!") {
+      if (updatedUser != "Invalid user!!") {
         res.status(200).json({
-          Message: "User Updated Successfully!!",
+          Message: "User updated successfully!!",
           updatedUser
         });
       } else {
         res.status(500).json({
-          Message: "User Not Updated"
+          Message: "User details not updated"
         });
       }
     }
@@ -61,21 +60,21 @@ async function editUser(req, res) {
 
 async function deleteUser(req, res) {
   try {
-    const _id = req.params.id;
+    const _id = req.body.id;
     const deletedUser = await UserService.deleteUser(_id);
     if (!deletedUser) {
       res.status(401).json({
-        Message: "User Not Deleted"
+        Message: "User not deleted"
       });
     } else {
-      if (deletedUser != "Invalid User!!") {
+      if (deletedUser != "Invalid user!!") {
         res.status(200).json({
-          Message: "User Deleted Successfully!!",
+          Message: "User deleted successfully!!",
           deletedUser
         });
       } else {
         res.status(500).json({
-          Message: "User Not Updated"
+          Message: "User not deleted"
         });
       }
     }
@@ -83,18 +82,18 @@ async function deleteUser(req, res) {
     res.status(500).send(error);
   }
 }
+
 async function getUsers(req, res) {
   try {
     const userData = await UserService.getUsers();
     if (!userData) {
       res.status(200).json({
-        Message: "No Users"
+        Message: "No users exists"
       });
     } else {
       res.status(200).send(userData);
     }
   } catch (error) {
-    //console.log(error);
     res.status(500).send(error);
   }
 }
@@ -105,7 +104,7 @@ async function getUsersById(req, res) {
     const userData = await UserService.getUsersById(_id);
     if (!userData) {
       res.status(200).json({
-        Message: "No Users"
+        Message: "User does not exists"
       });
     } else {
       res.status(200).send(userData);
@@ -123,11 +122,11 @@ async function createAvatar(req, res) {
     const updatedAvatarUser = await UserService.createAvatar(_id, avatarUrl);
     if (!updatedAvatarUser) {
       res.status(500).json({
-        Message: "Avatar is Not Updated"
+        Message: "Avatar is not updated"
       });
     } else {
       res.status(200).json({
-        Message: "Avatar is Updated",
+        Message: "Avatar is updated",
         updatedAvatarUser
       });
     }
@@ -143,10 +142,10 @@ async function getAvatar(req, res) {
     const userAvatarData = await UserService.getAvatar(_id);
     if (!userAvatarData) {
       res.status(401).json({
-        Message: "No Users"
+        Message: "User does not exists"
       });
     } else {
-      res.status(200).send({"Avatar": userAvatarData.avatarUrl});
+      res.status(200).send({ Avatar: userAvatarData.avatarUrl });
     }
   } catch (error) {
     res.status(500).send(error);

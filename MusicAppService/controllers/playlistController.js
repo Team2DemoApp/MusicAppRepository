@@ -1,15 +1,15 @@
-var UserService = require("../services/service");
+var playlistService = require("../services/playlistService");
 
 // Create a new playlist
-async function createUserPlayList(req, res) {
+async function createUserPlaylist(req, res) {
   try {
-    const playlist = await UserService.createUserPlayList(
+    const playlist = await playlistService.createUserPlaylist(
       req.body.name,
       req.userinfo.email,
       req.body.songs
     );
     res.status(200).json({
-      Message: "User Playlist Created",
+      Message: "User playlist created",
       playlist
     });
   } catch (error) {
@@ -19,9 +19,9 @@ async function createUserPlayList(req, res) {
 }
 
 // Get playlist
-async function getUserPlayList(req, res) {
+async function getUserPlaylist(req, res) {
   try {
-    const playlist = await UserService.getUserPlayList(req.userinfo.email);
+    const playlist = await playlistService.getUserPlaylist(req.userinfo.email);
     res.send(playlist);
   } catch (error) {
     console.error(error);
@@ -29,15 +29,15 @@ async function getUserPlayList(req, res) {
   }
 }
 
-// Edit playlist
-async function updateUserPlaylist(req, res) {
+// Add song to playlist
+async function addSongToUserPlaylist(req, res) {
   try {
-    const playlistData = await UserService.updateUserPlaylist(
+    const playlistData = await playlistService.addSongToUserPlaylist(
       req.body._id,
       req.body.songs
     );
     res.status(200).json({
-      Message: "User Playlist Updated",
+      Message: "Song(s) added to the playlist",
       playlistData
     });
   } catch (error) {
@@ -49,12 +49,12 @@ async function updateUserPlaylist(req, res) {
 // Edit playlist
 async function setFavourite(req, res) {
   try {
-    const songData = await UserService.setFavourite(
+    const songData = await playlistService.setFavourite(
       req.body._id,
       req.body.like
     );
     res.status(200).json({
-      Message: "Song's Favourite Updated",
+      Message: "Song's favourite updated",
       songData
     });
   } catch (error) {
@@ -63,9 +63,10 @@ async function setFavourite(req, res) {
   }
 }
 
-async function getSongsByPlayListId(req, res) {
+//Get songs of playlist
+async function getSongsByPlaylistId(req, res) {
   try {
-    songs = await UserService.getSongsByPlayListId(req.body.playlistId);
+    songs = await playlistService.getSongsByPlaylistId(req.body.playlistId);
     res.status(200).json({
       songs
     });
@@ -75,14 +76,15 @@ async function getSongsByPlayListId(req, res) {
   }
 }
 
+//Add comment to song
 async function addComment(req, res) {
   try {
-    const commentData = await UserService.addComment(
+    const commentData = await playlistService.addComment(
       req.body._id,
       req.body.comment
     );
     res.status(200).json({
-      Message: "User's comment is updated",
+      Message: "Comment added",
       commentData
     });
   } catch (error) {
@@ -90,11 +92,27 @@ async function addComment(req, res) {
   }
 }
 
+// Delete song from playlist
+async function deleteSongFromPlaylist(req, res) {
+  try {
+    await playlistService.deleteSongFromPlaylist(
+      req.body._id
+    );
+    res.status(200).json({
+      Message: "Song deleted from the playlist"
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+}
+
 module.exports = {
-  createUserPlayList,
-  getUserPlayList,
-  updateUserPlaylist,
+  createUserPlaylist,
+  getUserPlaylist,
+  addSongToUserPlaylist,
   setFavourite,
-  getSongsByPlayListId,
-  addComment
+  getSongsByPlaylistId,
+  addComment,
+  deleteSongFromPlaylist
 };

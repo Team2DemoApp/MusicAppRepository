@@ -1,5 +1,5 @@
 const { loginUser,changePassword } = require('../controllers/loginController');
-const loginService =  require("../services/service"); 
+const loginService =  require("../services/loginService"); 
 
 const mockRequest = (body) => ({ body });
 const mockResponse = () => {

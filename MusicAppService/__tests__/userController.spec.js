@@ -4,9 +4,9 @@ const { deleteUser } = require('../controllers/userController');
 const { getUsers } = require('../controllers/userController');
 const { getUsersById } = require('../controllers/userController');
 
-const UserService = require('../services/service');
+const UserService = require('../services/userService');
 
-jest.mock('../services/Service');
+jest.mock('../services/userService');
 
 describe('createUser', () => {
   it('should create a user and return a success message', async () => {
@@ -75,8 +75,8 @@ describe('editUser', () => {
   
       // Mocking request and response objects
       const req = {
-        params: { id: 1 },
         body: {
+          id: 1,
           username: 'editedUser',
           email: 'edited@example.com',
           password: 'newpassword123',
@@ -123,7 +123,7 @@ describe('editUser', () => {
       // Assertions
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
-        Message: 'User Not Updated',
+        Message: 'User details not updated',
         updatedUser: null,
       });
       expect(res.send).not.toHaveBeenCalled();
@@ -135,10 +135,9 @@ describe('editUser', () => {
   
       // Mocking request and response objects
       const req = {
-        params: { id: 1 },
         body: {
+          id: 1,
           username: 'editedUser',
-          email: 'edited@example.com',
           password: 'newpassword123',
           rpassword: 'newpassword123',
         },
@@ -155,7 +154,7 @@ describe('editUser', () => {
       // Assertions
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
-        Message: 'User Not Updated',
+        Message: 'User details not updated',
       });
       expect(res.send).not.toHaveBeenCalled();
     });
@@ -167,10 +166,9 @@ describe('editUser', () => {
   
       // Mocking request and response objects
       const req = {
-        params: { id: 1 },
         body: {
+          id: 1,
           username: 'editedUser',
-          email: 'edited@example.com',
           password: 'newpassword123',
           rpassword: 'newpassword123',
         },
@@ -199,7 +197,7 @@ describe('editUser', () => {
   
       // Mocking request and response objects
       const req = {
-        params: { id: 1 },
+        body: { id: 1 },
       };
       const res = {
         status: jest.fn().mockReturnThis(),
@@ -213,7 +211,7 @@ describe('editUser', () => {
       // Assertions
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
-        Message: 'User Deleted Successfully!!',
+        Message: 'User deleted successfully!!',
         deletedUser: mockDeletedUser,
       });
       expect(res.send).not.toHaveBeenCalled();
@@ -225,7 +223,7 @@ describe('editUser', () => {
   
       // Mocking request and response objects
       const req = {
-        params: { id: 1 },
+        body: { id: 1 },
       };
       const res = {
         status: jest.fn().mockReturnThis(),
@@ -239,7 +237,7 @@ describe('editUser', () => {
       // Assertions
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
-        Message: 'User Not Deleted',
+        Message: 'User not deleted',
       });
       expect(res.send).not.toHaveBeenCalled();
     });
@@ -250,7 +248,7 @@ describe('editUser', () => {
   
       // Mocking request and response objects
       const req = {
-        params: { id: 1 },
+        body: { id: 1 },
       };
       const res = {
         status: jest.fn().mockReturnThis(),
@@ -333,7 +331,7 @@ describe('editUser', () => {
       // Assertions
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
-        Message: 'No Users',
+        Message: 'No users exists',
       });
       expect(res.send).not.toHaveBeenCalled();
     });
@@ -402,7 +400,7 @@ describe('editUser', () => {
       // Assertions
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
-        Message: 'No Users',
+        Message: 'User does not exists',
       });
       expect(res.send).not.toHaveBeenCalled();
     });

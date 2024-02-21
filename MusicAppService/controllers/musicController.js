@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { getSpotifyMusicList } = require("../services/service.js");
+const { getSpotifyMusicList } = require("../services/musicService");
 
 //deezer
 async function getMusic(req, res) {

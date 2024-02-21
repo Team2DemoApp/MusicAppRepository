@@ -1,11 +1,11 @@
-const { createUser } = require("../services/service");
+const { createUser } = require("../services/userService");
 const Users = require("../model/user");
 
-const { editUser } = require("../services/service"); 
-const { deleteUser } = require("../services/service");
-const { getUsers } = require("../services/service");
-const { getUsersById } = require("../services/service");
-const { loginUser } = require("../services/service"); 
+const { editUser } = require("../services/userService"); 
+const { deleteUser } = require("../services/userService");
+const { getUsers } = require("../services/userService");
+const { getUsersById } = require("../services/userService");
+const { loginUser } = require("../services/loginService"); 
 
 var resultMock = {
   userInfo:'',
@@ -41,7 +41,7 @@ describe("createUser function", () => {
     expect(result.userInfo).toEqual(mockUserData);
   });
 
-  it('should return "Password is not Match" when passwords do not match', async () => {
+  it('should return "Passwords do NOT match" when passwords do not match', async () => {
     // Arrange
     const mockUserData = {
       username: "testuser",
@@ -59,7 +59,7 @@ describe("createUser function", () => {
     );
 
     // Assert
-    expect(result.message).toEqual("Password is not Match");
+    expect(result.message).toEqual("Passwords do NOT match);
   });
 
   it("should return an error when there is an exception", async () => {
@@ -94,7 +94,6 @@ describe("editUser function", () => {
     const mockUserData = {
       _id: "mockUserId",
       username: "testuser",
-      email: "test@example.com",
       password: "oldPassword",
       rpassword: "oldPassword",
     };
@@ -183,7 +182,7 @@ describe("deleteUser function", () => {
     expect(result).toEqual(mockUserData);
   });
 
-  it('should return "Invalid User!!" when user is not found', async () => {
+  it('should return "Invalid user!!" when user is not found', async () => {
     // Arrange
     const mockUserId = "nonexistentUserId";
     Users.findOne.mockResolvedValueOnce(null);
@@ -192,7 +191,7 @@ describe("deleteUser function", () => {
     const result = await deleteUser(mockUserId);
 
     // Assert
-    expect(result).toEqual("Invalid User!!");
+    expect(result).toEqual("Invalid user!!");
   });
 
   it("should return an error when there is an exception", async () => {
