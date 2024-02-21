@@ -34,7 +34,6 @@ async function updateUserPlaylist(req, res) {
   try {
     const playlistData = await UserService.updateUserPlaylist(
       req.body._id,
-      req.body.name,
       req.body.songs
     );
     res.status(200).json({

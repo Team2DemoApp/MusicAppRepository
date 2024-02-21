@@ -118,7 +118,7 @@ async function getUsersById(req, res) {
 //User can update avatar
 async function createAvatar(req, res) {
   try {
-    const _id = req.params.id;
+    const _id = req.body.id;
     const { avatarUrl } = req.body;
     const updatedAvatarUser = await UserService.createAvatar(_id, avatarUrl);
     if (!updatedAvatarUser) {
@@ -139,7 +139,7 @@ async function createAvatar(req, res) {
 //Gets User's avatar
 async function getAvatar(req, res) {
   try {
-    const _id = req.params.id;
+    const _id = req.body.id;
     const userAvatarData = await UserService.getAvatar(_id);
     if (!userAvatarData) {
       res.status(401).json({

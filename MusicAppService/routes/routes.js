@@ -8,8 +8,8 @@ routers.get('/getUser/:id',auth, userController.getUsersById);
 routers.post('/createUser', userController.createUser);
 routers.post('/editUser/:id',auth, userController.editUser);
 routers.delete('/deleteUser/:id',auth, userController.deleteUser);
-routers.post('/createAvatar/:id',auth, userController.createAvatar);
-routers.get('/getAvatar/:id',auth, userController.getAvatar);
+routers.post('/createAvatar',auth, userController.createAvatar);
+routers.get('/getAvatar',auth, userController.getAvatar);
 
 const musicController = require('../controllers/musicController');
 routers.get('/music', musicController.getMusic);
