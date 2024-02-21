@@ -57,7 +57,7 @@ async function getSpotifyMusicList(client_id, client_secret) {
 // Create a new playlist
 async function createUserPlayList(name, email, songs) {
   try {
-    const playlist = new Playlist({ name, email, songs });
+    const playlist = new Playlist({ name, email });
     var createdPlaylist = await playlist.save();
     const playlistId = createdPlaylist._id;
     const id = playlistId.toString();
