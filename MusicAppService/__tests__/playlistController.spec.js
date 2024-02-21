@@ -109,12 +109,12 @@ describe('getUserPlayList function', () => {
     it('should update user playlist and return success message', async () => {
       // Arrange
       const mockReq = mockRequest1({
-        _id: 'playlistId',
+        _id: '65d5a3b98d1c8fabc81cc5d7',
         name: 'MyUpdatedPlaylist',
         songs: ['song3', 'song4']
       });
       const mockRes = mockResponse();
-      const mockUpdatedPlaylist = { _id: 'playlistId', name: 'MyUpdatedPlaylist', songs: ['song3', 'song4'] };
+      const mockUpdatedPlaylist = { _id: '65d5a3b98d1c8fabc81cc5d7', name: 'MyUpdatedPlaylist', songs: ['song3', 'song4'] };
   
       UserService.updateUserPlaylist.mockResolvedValueOnce(mockUpdatedPlaylist);
   
@@ -125,7 +125,7 @@ describe('getUserPlayList function', () => {
     it('should handle errors and return 500 status', async () => {
       // Arrange
       const mockReq = mockRequest1({
-        _id: 'playlistId',
+        _id: '65d5a3b98d1c8fabc81cc5d7',
         name: 'MyUpdatedPlaylist',
         songs: ['song3', 'song4']
       });
