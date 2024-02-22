@@ -10,7 +10,7 @@ const mockResponse = () => {
   return res;
 };
 
-jest.mock("../services/service");
+jest.mock("../services/loginService");
 
 describe('loginUser function', () => {
   it('should return a token when login is successful', async () => {

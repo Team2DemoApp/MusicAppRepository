@@ -78,7 +78,6 @@ describe('editUser', () => {
         body: {
           id: 1,
           username: 'editedUser',
-          email: 'edited@example.com',
           password: 'newpassword123',
           rpassword: 'newpassword123',
         },
@@ -131,7 +130,7 @@ describe('editUser', () => {
   
     it('should handle invalid user and return a 500 status', async () => {
       // Mocking UserService.editUser to return "Invalid User!!"
-      UserService.editUser.mockResolvedValue('Invalid User!!');
+      UserService.editUser.mockResolvedValue('Invalid user!!');
   
       // Mocking request and response objects
       const req = {
@@ -244,7 +243,7 @@ describe('editUser', () => {
   
     it('should handle invalid user and return a 500 status', async () => {
       // Mocking UserService.deleteUser to return "Invalid User!!"
-      UserService.deleteUser.mockResolvedValue('Invalid User!!');
+      UserService.deleteUser.mockResolvedValue('Invalid user!!');
   
       // Mocking request and response objects
       const req = {
@@ -269,7 +268,7 @@ describe('editUser', () => {
   
       // Mocking request and response objects
       const req = {
-        params: { id: 1 },
+        body: { id: 1 },
       };
       const res = {
         status: jest.fn().mockReturnThis(),

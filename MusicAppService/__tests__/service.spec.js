@@ -59,7 +59,7 @@ describe("createUser function", () => {
     );
 
     // Assert
-    expect(result.message).toEqual("Passwords do NOT match);
+    expect(result.message).toEqual("Passwords do NOT match");
   });
 
   it("should return an error when there is an exception", async () => {
@@ -113,7 +113,6 @@ describe("editUser function", () => {
     const result = await editUser(
       mockUserData._id,
       mockUpdatedUserData.username,
-      mockUpdatedUserData.email,
       mockUpdatedUserData.password,
       mockUpdatedUserData.rpassword
     );
@@ -122,7 +121,7 @@ describe("editUser function", () => {
     expect(result).toEqual(mockUpdatedUserData);
   });
 
-  it('should return "Invalid User!!" when user is not found', async () => {
+  it('should return "Invalid user!!" when user is not found', async () => {
     // Arrange
     const mockUserId = "nonexistentUserId";
     Users.findOne.mockResolvedValueOnce(null);

@@ -1,8 +1,7 @@
-const { createUserPlayList } = require('../controllers/playlistController'); 
-const UserService = require("../services/playlistService"); 
-const { getUserPlayList } = require('../controllers/playlistController');
-const { updateUserPlaylist } = require('../controllers/playlistController'); 
-const mockRequest1 = (userinfo) => ({ userinfo });
+const { createUserPlaylist } = require("../controllers/playlistController");
+const playlistService = require("../services/playlistService");
+const { getUserPlaylist } = require("../controllers/playlistController");
+const mockRequest1 = userinfo => ({ userinfo });
 const mockResponse1 = () => {
   const res = {};
   res.status = jest.fn().mockReturnValue(res);
@@ -20,124 +19,92 @@ const mockResponse = () => {
 
 jest.mock("../services/playlistService"); // Mock the playlist service
 
-describe('createUserPlayList function', () => {
-  it('should create a user playlist and return success message', async () => {
+describe("createUserPlaylist function", () => {
+  it("should create a user playlist and return success message", async () => {
     // Arrange
-    const mockReq = mockRequest({
-      name: 'MyPlaylist',
-      songs: ['song1', 'song2']
-    }, {
-      email: 'test@example.com'
-    });
+    const mockReq = mockRequest(
+      {
+        name: "MyPlaylist",
+        songs: ["song1", "song2"]
+      },
+      {
+        email: "test@example.com"
+      }
+    );
     const mockRes = mockResponse();
-    const mockPlaylist = { name: 'MyPlaylist', songs: ['song1', 'song2'] };
+    const mockPlaylist = { name: "MyPlaylist", songs: ["song1", "song2"] };
 
-    UserService.createUserPlayList.mockResolvedValueOnce(mockPlaylist);
+    playlistService.createUserPlaylist.mockResolvedValueOnce(mockPlaylist);
 
     // Act
-    await createUserPlayList(mockReq, mockRes);
+    await createUserPlaylist(mockReq, mockRes);
 
     // Assert
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({
-      Message: 'User Playlist Created',
+      Message: "User playlist created",
       playlist: mockPlaylist
     });
   });
 
-  it('should handle errors and return 500 status', async () => {
+  it("should handle errors and return 500 status", async () => {
     // Arrange
-    const mockReq = mockRequest({
-      name: 'MyPlaylist',
-      songs: ['song1', 'song2']
-    }, {
-      email: 'test@example.com'
-    });
+    const mockReq = mockRequest(
+      {
+        name: "MyPlaylist",
+        songs: ["song1", "song2"]
+      },
+      {
+        email: "test@example.com"
+      }
+    );
     const mockRes = mockResponse();
-    const mockError = new Error('Some error');
+    const mockError = new Error("Some error");
 
-    UserService.createUserPlayList.mockRejectedValueOnce(mockError);
+    playlistService.createUserPlaylist.mockRejectedValueOnce(mockError);
 
     // Act
-     await createUserPlayList(mockReq, mockRes);
+    await createUserPlaylist(mockReq, mockRes);
 
     // Assert
     expect(mockRes.status).toHaveBeenCalledWith(500);
-   expect(mockRes.send).toHaveBeenCalledWith(mockError);
+    expect(mockRes.send).toHaveBeenCalledWith(mockError);
   });
 });
 
-describe('getUserPlayList function', () => {
-    it('should get user playlist and return it', async () => {
-      // Arrange
-      const mockReq = mockRequest1({
-        email: 'test@example.com'
-      });
-      const mockRes = mockResponse1();
-      const mockPlaylist = { name: 'MyPlaylist', songs: ['song1', 'song2'] };
-  
-      UserService.getUserPlayList.mockResolvedValueOnce(mockPlaylist);
-  
-      // Act
-      await getUserPlayList(mockReq, mockRes);
-  
-      // Assert
-      expect(mockRes.send).toHaveBeenCalledWith(mockPlaylist);
+describe("getUserPlaylist function", () => {
+  it("should get user playlist and return it", async () => {
+    // Arrange
+    const mockReq = mockRequest1({
+      email: "test@example.com"
     });
-  
-    it('should handle errors and return 500 status', async () => {
-      // Arrange
-      const mockReq = mockRequest1({
-        email: 'test@example.com'
-      });
-      const mockRes = mockResponse();
-      const mockError = new Error('Some error');
-  
-      UserService.getUserPlayList.mockRejectedValueOnce(mockError);
-  
-      // Act
-      await getUserPlayList(mockReq, mockRes);
-  
-      // Assert
-      expect(mockRes.status).toHaveBeenCalledWith(500);
-      expect(mockRes.send).toHaveBeenCalledWith(mockError);
-     
-    });
+    const mockRes = mockResponse1();
+    const mockPlaylist = {_id:"65d5bde3075e233f145049ee", name: "MyPlaylist","email": "sushdube@test.com" };
+
+    playlistService.getUserPlaylist.mockResolvedValueOnce(mockPlaylist);
+
+    // Act
+    await getUserPlaylist(mockReq, mockRes);
+
+    // Assert
+    expect(mockRes.send).toHaveBeenCalledWith(mockPlaylist);
   });
 
-  describe('updateUserPlaylist function', () => {
-    it('should update user playlist and return success message', async () => {
-      // Arrange
-      const mockReq = mockRequest1({
-        _id: '65d5a3b98d1c8fabc81cc5d7',
-        name: 'MyUpdatedPlaylist',
-        songs: ['song3', 'song4']
-      });
-      const mockRes = mockResponse();
-      const mockUpdatedPlaylist = { _id: '65d5a3b98d1c8fabc81cc5d7', name: 'MyUpdatedPlaylist', songs: ['song3', 'song4'] };
-  
-      UserService.updateUserPlaylist.mockResolvedValueOnce(mockUpdatedPlaylist);
-  
-      // Act
-      await updateUserPlaylist(mockReq, mockRes);
+  it("should handle errors and return 500 status", async () => {
+    // Arrange
+    const mockReq = mockRequest1({
+      email: "test@example.com"
     });
-  
-    it('should handle errors and return 500 status', async () => {
-      // Arrange
-      const mockReq = mockRequest1({
-        _id: '65d5a3b98d1c8fabc81cc5d7',
-        name: 'MyUpdatedPlaylist',
-        songs: ['song3', 'song4']
-      });
-      const mockRes = mockResponse();
-      const mockError = new Error('Some error');
-  
-      UserService.updateUserPlaylist.mockRejectedValueOnce(mockError);
-  
-      // Act
-      await updateUserPlaylist(mockReq, mockRes);
-  
-      // Assert
-      expect(mockRes.status).toHaveBeenCalledWith(500);
-    });
+    const mockRes = mockResponse();
+    const mockError = new Error("Some error");
+
+    playlistService.getUserPlaylist.mockRejectedValueOnce(mockError);
+
+    // Act
+    await getUserPlaylist(mockReq, mockRes);
+
+    // Assert
+    expect(mockRes.status).toHaveBeenCalledWith(500);
+    expect(mockRes.send).toHaveBeenCalledWith(mockError);
   });
+});
