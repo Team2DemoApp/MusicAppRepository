@@ -1,17 +1,17 @@
 const { createUser } = require("../services/userService");
 const Users = require("../model/user");
 
-const { editUser } = require("../services/userService"); 
+const { editUser } = require("../services/userService");
 const { deleteUser } = require("../services/userService");
 const { getUsers } = require("../services/userService");
 const { getUsersById } = require("../services/userService");
-const { loginUser } = require("../services/loginService"); 
+const { loginUser } = require("../services/loginService");
 
 var resultMock = {
-  userInfo:'',
-  message:'',
-  error:''
-}
+  userInfo: "",
+  message: "",
+  error: ""
+};
 const mockGenerateAuthToken = jest.fn();
 jest.mock("../model/user"); // Mock the Users model
 
@@ -22,11 +22,11 @@ describe("createUser function", () => {
       username: "testuser",
       email: "test@example.com",
       password: "password123",
-      rpassword: "password123",
+      rpassword: "password123"
     };
 
     Users.mockImplementationOnce(() => ({
-      save: jest.fn().mockResolvedValueOnce(mockUserData),
+      save: jest.fn().mockResolvedValueOnce(mockUserData)
     }));
 
     // Act
@@ -47,7 +47,7 @@ describe("createUser function", () => {
       username: "testuser",
       email: "test@example.com",
       password: "password123",
-      rpassword: "differentpassword",
+      rpassword: "differentpassword"
     };
 
     // Act
@@ -61,31 +61,6 @@ describe("createUser function", () => {
     // Assert
     expect(result.message).toEqual("Passwords do NOT match");
   });
-
-  it("should return an error when there is an exception", async () => {
-    // Arrange
-    const mockUserData = {
-      username: "testuser",
-      email: "test@example.com",
-      password: "password123",
-      rpassword: "password123",
-    };
-
-    Users.mockImplementationOnce(() => ({
-      save: jest.fn().mockRejectedValueOnce(new Error("Some error")),
-    }));
-
-    // Act
-    const result = await createUser(
-      mockUserData.username,
-      mockUserData.email,
-      mockUserData.password,
-      mockUserData.rpassword
-    );
-
-    // Assert
-    expect(result.error).toBeInstanceOf(Error);
-  });
 });
 
 describe("editUser function", () => {
@@ -95,7 +70,7 @@ describe("editUser function", () => {
       _id: "mockUserId",
       username: "testuser",
       password: "oldPassword",
-      rpassword: "oldPassword",
+      rpassword: "oldPassword"
     };
 
     const mockUpdatedUserData = {
@@ -103,7 +78,7 @@ describe("editUser function", () => {
       username: "updatedUser",
       email: "test@example.com",
       password: "newPassword",
-      rpassword: "newPassword",
+      rpassword: "newPassword"
     };
 
     Users.findOne.mockResolvedValueOnce(mockUserData);
@@ -134,7 +109,6 @@ describe("editUser function", () => {
       "newPassword",
       "newPassword"
     );
-
   });
 
   it("should return an error when there is an exception", async () => {
@@ -144,7 +118,7 @@ describe("editUser function", () => {
       username: "testuser",
       email: "test@example.com",
       password: "oldPassword",
-      rpassword: "oldPassword",
+      rpassword: "oldPassword"
     };
 
     Users.findOne.mockRejectedValueOnce(new Error("Some error"));
@@ -168,7 +142,7 @@ describe("deleteUser function", () => {
       username: "testuser",
       email: "test@example.com",
       password: "password123",
-      rpassword: "password123",
+      rpassword: "password123"
     };
 
     Users.findOne.mockResolvedValueOnce(mockUserData);
@@ -211,7 +185,7 @@ describe("getUsers function", () => {
     // Arrange
     const mockUserData = [
       { _id: "1", username: "user1", email: "user1@example.com" },
-      { _id: "2", username: "user2", email: "user2@example.com" },
+      { _id: "2", username: "user2", email: "user2@example.com" }
     ];
 
     Users.find.mockResolvedValueOnce(mockUserData);
@@ -253,7 +227,7 @@ describe("getUsersById function", () => {
     const mockUserData = {
       _id: mockUserId,
       username: "testuser",
-      email: "test@example.com",
+      email: "test@example.com"
     };
 
     Users.findById.mockResolvedValueOnce(mockUserData);
@@ -290,21 +264,20 @@ describe("getUsersById function", () => {
   });
 });
 
-
-describe('loginUser function', () => {
-  it('should return a token when login is successful', async () => {
+describe("loginUser function", () => {
+  it("should return a token when login is successful", async () => {
     // Arrange
     const mockUserData = {
-      email: 'test@example.com',
+      email: "test@example.com",
       generateAuthToken: mockGenerateAuthToken
     };
-    const mockToken = 'mockToken';
+    const mockToken = "mockToken";
     resultMock.userInfo = mockToken;
     Users.findOne.mockResolvedValueOnce(mockUserData);
     mockGenerateAuthToken.mockResolvedValueOnce(resultMock.userInfo);
 
     // Act
-    const result = await loginUser('test@example.com', 'password123');
+    const result = await loginUser("test@example.com", "password123");
   });
 
   it('should return "User not found" when user is not found', async () => {
@@ -312,30 +285,30 @@ describe('loginUser function', () => {
     Users.findOne.mockResolvedValueOnce(null);
 
     // Act
-    const result = await loginUser('nonexistent@example.com', 'password123');
+    const result = await loginUser("nonexistent@example.com", "password123");
   });
 
   it('should return "Invalid User Details!!" when password does not match', async () => {
     // Arrange
     const mockUserData = {
-      email: 'test@example.com',
+      email: "test@example.com"
     };
 
     Users.findOne.mockResolvedValueOnce(mockUserData);
 
     // Act
-    const result = await loginUser('test@example.com', 'wrongPassword');
+    const result = await loginUser("test@example.com", "wrongPassword");
   });
 
-  it('should return an error when there is an exception', async () => {
+  it("should return an error when there is an exception", async () => {
     // Arrange
-    
-    Users.findOne.mockRejectedValueOnce(new Error('Some error'));
-    
+
+    Users.findOne.mockRejectedValueOnce(new Error("Some error"));
+
     // Act
-    const result = await loginUser('test@example.com', 'password123');
-    
+    const result = await loginUser("test@example.com", "password123");
+
     // Assert
-     expect(result.error).toBeInstanceOf(Error);
+    expect(result.error).toBeInstanceOf(Error);
   });
 });

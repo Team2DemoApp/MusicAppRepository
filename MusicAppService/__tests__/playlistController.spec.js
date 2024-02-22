@@ -69,7 +69,7 @@ describe("createUserPlaylist function", () => {
 
     // Assert
     expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith(mockError);
+    expect(mockRes.send).toHaveBeenCalledWith(mockError);
   });
  });
 
