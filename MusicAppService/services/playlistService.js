@@ -30,14 +30,15 @@ async function getUserPlaylist(email) {
 }
 
 // Edit playlist
-async function addSongToUserPlaylist(_id, songs) {
+async function addSongToUserPlaylist(_id, songs, email) {
   try {
-    const playlistData = await Playlist.findOne({ _id });
-    if (!playlistData) {
-      return "Invalid Playlist";
+    const playlist = await Playlist.find({
+      $and: [{ _id: _id }, { email: email }]
+    });
+    if (playlist.length === 0) {
+      return "Playlist does not exists for logged in user";
     } else {
       await createPlaylistSong(_id, songs);
-
       const updatedPlaylist = await Song.find({
         $where: "this.playlistId === '" + _id.toString() + "'"
       });
@@ -103,8 +104,15 @@ async function setFavourite(_id, isLike) {
 }
 
 // Get playlist songs
-async function getSongsByPlaylistId(playlistId) {
+async function getSongsByPlaylistId(playlistId, email) {
   try {
+    const playlist = await Playlist.find({
+      $and: [{ _id: playlistId }, { email: email }]
+    });
+    if (playlist.length === 0) {
+      return "Playlist does not exists for logged in user";
+    }
+
     let songsData = [];
     const songs = await Song.find({
       $where: "this.playlistId === '" + playlistId + "'"

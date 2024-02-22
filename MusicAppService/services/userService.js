@@ -27,7 +27,12 @@ async function createUser(username, email, password, rpassword) {
       return result;
     }
   } catch (error) {
-    result.error = error;
+    if (error.keyValue.email === email) {
+      result.error = "Email already exists";
+    } else {
+      result.error = error;
+    }
+
     return result;
   }
 }
@@ -101,10 +106,10 @@ async function getUsersById(_id) {
 }
 
 // creates a avatar
-async function createAvatar(_id, avatarUrl) {
+async function createAvatar(email, avatarUrl) {
   try {
-    const getavataruser = await Users.findByIdAndUpdate(
-      { _id: _id },
+    const updatedUserData = await Users.updateOne(
+      { email: email },
       {
         avatarUrl: avatarUrl
       },
@@ -112,16 +117,16 @@ async function createAvatar(_id, avatarUrl) {
         new: true
       }
     );
-    return getavataruser;
+    return updatedUserData;
   } catch (error) {
     return error;
   }
 }
 
 //get avatar
-async function getAvatar(_id) {
+async function getAvatar(email) {
   try {
-    const useravatar = await Users.findById({ _id });
+    const useravatar = await Users.findOne({ email });
     return useravatar;
   } catch (error) {
     return error;

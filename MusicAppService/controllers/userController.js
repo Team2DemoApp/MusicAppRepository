@@ -117,17 +117,19 @@ async function getUsersById(req, res) {
 //User can update avatar
 async function createAvatar(req, res) {
   try {
-    const _id = req.body.id;
     const { avatarUrl } = req.body;
-    const updatedAvatarUser = await UserService.createAvatar(_id, avatarUrl);
-    if (!updatedAvatarUser) {
+    const updatedAvatar = await UserService.createAvatar(
+      req.userinfo.email,
+      avatarUrl
+    );
+    if (!updatedAvatar) {
       res.status(500).json({
         Message: "Avatar is not updated"
       });
     } else {
       res.status(200).json({
         Message: "Avatar is updated",
-        updatedAvatarUser
+        updatedAvatar
       });
     }
   } catch (err) {
@@ -138,8 +140,7 @@ async function createAvatar(req, res) {
 //Gets User's avatar
 async function getAvatar(req, res) {
   try {
-    const _id = req.body.id;
-    const userAvatarData = await UserService.getAvatar(_id);
+    const userAvatarData = await UserService.getAvatar(req.userinfo.email,);
     if (!userAvatarData) {
       res.status(401).json({
         Message: "User does not exists"

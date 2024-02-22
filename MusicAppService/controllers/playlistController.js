@@ -34,10 +34,10 @@ async function addSongToUserPlaylist(req, res) {
   try {
     const playlistData = await playlistService.addSongToUserPlaylist(
       req.body._id,
-      req.body.songs
+      req.body.songs,
+      req.userinfo.email
     );
     res.status(200).json({
-      Message: "Song(s) added to the playlist",
       playlistData
     });
   } catch (error) {
@@ -66,7 +66,7 @@ async function setFavourite(req, res) {
 //Get songs of playlist
 async function getSongsByPlaylistId(req, res) {
   try {
-    songs = await playlistService.getSongsByPlaylistId(req.body.playlistId);
+    songs = await playlistService.getSongsByPlaylistId(req.body.playlistId,req.userinfo.email);
     res.status(200).json({
       songs
     });
