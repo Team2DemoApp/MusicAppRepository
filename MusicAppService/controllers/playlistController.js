@@ -10,7 +10,7 @@ async function createUserPlaylist(req, res) {
     );
     res.status(200).json({
       Message: "User playlist created",
-      playlist
+      Data: playlist
     });
   } catch (error) {
     console.error(error);
@@ -22,7 +22,10 @@ async function createUserPlaylist(req, res) {
 async function getUserPlaylist(req, res) {
   try {
     const playlist = await playlistService.getUserPlaylist(req.userinfo.email);
-    res.send(playlist);
+    res.status(200).json({
+      Message:"User playlist",
+      Data:playlist
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
@@ -37,9 +40,16 @@ async function addSongToUserPlaylist(req, res) {
       req.body.songs,
       req.userinfo.email
     );
-    res.status(200).json({
-      playlistData
-    });
+    if (playlistData.error != "") {
+      res.status(401).json({
+        Error: playlistData.error
+      });
+    } else {
+      res.status(200).json({
+        Message: playlistData.message,
+        Data: playlistData.data
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
@@ -55,7 +65,7 @@ async function setFavourite(req, res) {
     );
     res.status(200).json({
       Message: "Song's favourite updated",
-      songData
+      Data: songData
     });
   } catch (error) {
     console.error(error);
@@ -66,10 +76,20 @@ async function setFavourite(req, res) {
 //Get songs of playlist
 async function getSongsByPlaylistId(req, res) {
   try {
-    songs = await playlistService.getSongsByPlaylistId(req.body.playlistId,req.userinfo.email);
-    res.status(200).json({
-      songs
-    });
+    songs = await playlistService.getSongsByPlaylistId(
+      req.body.playlistId,
+      req.userinfo.email
+    );
+    if (songs.error != "") {
+      res.status(401).json({
+        Error: songs.error
+      });
+    } else {
+      res.status(200).json({
+        Message: songs.message,
+        Data: songs.data
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
@@ -84,8 +104,8 @@ async function addComment(req, res) {
       req.body.comment
     );
     res.status(200).json({
-      Message: "Comment added",
-      commentData
+      Message: "Song's comment added",
+      Data: commentData
     });
   } catch (error) {
     res.status(500).send(error);
@@ -95,9 +115,7 @@ async function addComment(req, res) {
 // Delete song from playlist
 async function deleteSongFromPlaylist(req, res) {
   try {
-    await playlistService.deleteSongFromPlaylist(
-      req.body._id
-    );
+    await playlistService.deleteSongFromPlaylist(req.body._id);
     res.status(200).json({
       Message: "Song deleted from the playlist"
     });

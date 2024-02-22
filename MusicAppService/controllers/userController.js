@@ -129,7 +129,7 @@ async function createAvatar(req, res) {
     } else {
       res.status(200).json({
         Message: "Avatar is updated",
-        updatedAvatar
+        Data: updatedAvatar
       });
     }
   } catch (err) {
@@ -140,13 +140,16 @@ async function createAvatar(req, res) {
 //Gets User's avatar
 async function getAvatar(req, res) {
   try {
-    const userAvatarData = await UserService.getAvatar(req.userinfo.email,);
+    const userAvatarData = await UserService.getAvatar(req.userinfo.email);
     if (!userAvatarData) {
       res.status(401).json({
         Message: "User does not exists"
       });
     } else {
-      res.status(200).send({ Avatar: userAvatarData.avatarUrl });
+      res.status(200).json({
+        Message: "User avatar",
+        Data: userAvatarData.avatarUrl
+      });
     }
   } catch (error) {
     res.status(500).send(error);

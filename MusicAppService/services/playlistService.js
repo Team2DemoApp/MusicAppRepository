@@ -1,6 +1,12 @@
 const Playlist = require("../model/playlist");
 const Song = require("../model/song");
 
+var result = {
+  data: "",
+  message: "",
+  error: ""
+};
+
 // Create playlist
 async function createUserPlaylist(name, email, songs) {
   try {
@@ -32,17 +38,23 @@ async function getUserPlaylist(email) {
 // Edit playlist
 async function addSongToUserPlaylist(_id, songs, email) {
   try {
+    result.error = "";
+    result.data = "";
+    result.message = "";
     const playlist = await Playlist.find({
       $and: [{ _id: _id }, { email: email }]
     });
     if (playlist.length === 0) {
-      return "Playlist does not exists for logged in user";
+      result.error = "Playlist does not exists for logged in user";
+      return result;
     } else {
       await createPlaylistSong(_id, songs);
       const updatedPlaylist = await Song.find({
         $where: "this.playlistId === '" + _id.toString() + "'"
       });
-      return updatedPlaylist;
+      result.data = updatedPlaylist;
+      result.message = "Song added to the playlist";
+      return result;
     }
   } catch (error) {
     console.error(error);
@@ -106,11 +118,15 @@ async function setFavourite(_id, isLike) {
 // Get playlist songs
 async function getSongsByPlaylistId(playlistId, email) {
   try {
+    result.error = "";
+    result.data = "";
+    result.message = "";
     const playlist = await Playlist.find({
       $and: [{ _id: playlistId }, { email: email }]
     });
     if (playlist.length === 0) {
-      return "Playlist does not exists for logged in user";
+        result.error = "Playlist does not exists for logged in user";
+      return result;
     }
 
     let songsData = [];
@@ -130,7 +146,9 @@ async function getSongsByPlaylistId(playlistId, email) {
         comment: value.comment
       });
     });
-    return songsData;
+    result.data = songsData
+    result.message = "Playlist songs";
+    return result;
   } catch (error) {
     console.error(error);
     return error;

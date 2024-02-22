@@ -5,6 +5,7 @@ const mockRequest1 = userinfo => ({ userinfo });
 const mockResponse1 = () => {
   const res = {};
   res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
   res.send = jest.fn().mockReturnValue(res);
   return res;
 };
@@ -43,7 +44,7 @@ describe("createUserPlaylist function", () => {
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({
       Message: "User playlist created",
-      playlist: mockPlaylist
+      Data: mockPlaylist
     });
   });
 
@@ -68,9 +69,9 @@ describe("createUserPlaylist function", () => {
 
     // Assert
     expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.send).toHaveBeenCalledWith(mockError);
+    expect(mockRes.json).toHaveBeenCalledWith(mockError);
   });
-});
+ });
 
 describe("getUserPlaylist function", () => {
   it("should get user playlist and return it", async () => {
@@ -87,7 +88,11 @@ describe("getUserPlaylist function", () => {
     await getUserPlaylist(mockReq, mockRes);
 
     // Assert
-    expect(mockRes.send).toHaveBeenCalledWith(mockPlaylist);
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    expect(mockRes.json).toHaveBeenCalledWith({
+      Message: "User playlist",
+      Data: mockPlaylist
+    });
   });
 
   it("should handle errors and return 500 status", async () => {
@@ -107,4 +112,4 @@ describe("getUserPlaylist function", () => {
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.send).toHaveBeenCalledWith(mockError);
   });
-});
+ });
