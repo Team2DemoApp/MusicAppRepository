@@ -34,24 +34,18 @@ async function editUser(req, res) {
       _id,
       username,
       password,
-      rpassword
+      rpassword,
+      req.userinfo.email
     );
-    if (!updatedUser) {
+    if (updatedUser.error != "") {
       res.status(401).json({
-        Message: "User details not updated",
-        updatedUser,
+        Error: updatedUser.error,
       });
     } else {
-      if (updatedUser != "Invalid user!!") {
-        res.status(200).json({
-          Message: "User updated successfully!!",
-          updatedUser,
-        });
-      } else {
-        res.status(500).json({
-          Message: "User details not updated",
-        });
-      }
+      res.status(200).json({
+        Message: updatedUser.message,
+        UserData: updatedUser.userInfo,
+      });
     }
   } catch (error) {
     res.status(500).send(error);
