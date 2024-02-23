@@ -13,12 +13,12 @@ async function createUser(req, res) {
     if (createduser.userInfo == "") {
       res.status(401).json({
         Message: createduser.message,
-        Error: createduser.error
+        Error: createduser.error,
       });
     } else {
       res.status(200).json({
         Message: "User created!!",
-        userCreated: createduser.userInfo
+        userCreated: createduser.userInfo,
       });
     }
   } catch (error) {
@@ -39,17 +39,17 @@ async function editUser(req, res) {
     if (!updatedUser) {
       res.status(401).json({
         Message: "User details not updated",
-        updatedUser
+        updatedUser,
       });
     } else {
       if (updatedUser != "Invalid user!!") {
         res.status(200).json({
           Message: "User updated successfully!!",
-          updatedUser
+          updatedUser,
         });
       } else {
         res.status(500).json({
-          Message: "User details not updated"
+          Message: "User details not updated",
         });
       }
     }
@@ -64,17 +64,17 @@ async function deleteUser(req, res) {
     const deletedUser = await UserService.deleteUser(_id);
     if (!deletedUser) {
       res.status(401).json({
-        Message: "User not deleted"
+        Message: "User not deleted",
       });
     } else {
       if (deletedUser != "Invalid user!!") {
         res.status(200).json({
           Message: "User deleted successfully!!",
-          deletedUser
+          deletedUser,
         });
       } else {
         res.status(500).json({
-          Message: "User not deleted"
+          Message: "User not deleted",
         });
       }
     }
@@ -88,7 +88,7 @@ async function getUsers(req, res) {
     const userData = await UserService.getUsers();
     if (!userData) {
       res.status(200).json({
-        Message: "No users exists"
+        Message: "No users exists",
       });
     } else {
       res.status(200).send(userData);
@@ -100,11 +100,11 @@ async function getUsers(req, res) {
 
 async function getUsersById(req, res) {
   try {
-    const _id = req.params.id;
+    const _id = req.body.id;
     const userData = await UserService.getUsersById(_id);
     if (!userData) {
       res.status(200).json({
-        Message: "User does not exists"
+        Message: "User does not exists",
       });
     } else {
       res.status(200).send(userData);
@@ -124,12 +124,12 @@ async function createAvatar(req, res) {
     );
     if (!updatedAvatar) {
       res.status(500).json({
-        Message: "Avatar is not updated"
+        Message: "Avatar is not updated",
       });
     } else {
       res.status(200).json({
         Message: "Avatar is updated",
-        Data: updatedAvatar
+        Data: updatedAvatar,
       });
     }
   } catch (err) {
@@ -143,12 +143,12 @@ async function getAvatar(req, res) {
     const userAvatarData = await UserService.getAvatar(req.userinfo.email);
     if (!userAvatarData) {
       res.status(401).json({
-        Message: "User does not exists"
+        Message: "User does not exists",
       });
     } else {
       res.status(200).json({
         Message: "User avatar",
-        Data: userAvatarData.avatarUrl
+        Data: userAvatarData.avatarUrl,
       });
     }
   } catch (error) {
@@ -163,5 +163,5 @@ module.exports = {
   getUsers,
   getUsersById,
   createAvatar,
-  getAvatar
+  getAvatar,
 };
