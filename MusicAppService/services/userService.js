@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 var result = {
   userInfo: "",
   message: "",
-  error: ""
+  error: "",
 };
 
 async function createUser(username, email, password, rpassword) {
@@ -17,7 +17,7 @@ async function createUser(username, email, password, rpassword) {
         username: username,
         email: email,
         password: password,
-        rpassword: rpassword
+        rpassword: rpassword,
       });
       const registered = await userRegister.save();
       result.userInfo = registered;
@@ -37,18 +37,25 @@ async function createUser(username, email, password, rpassword) {
   }
 }
 
-async function editUser(_id, username, password, rpassword) {
+async function editUser(_id, username, password, rpassword, email) {
   try {
-    const userData = await Users.findOne({ _id });
-    if (!userData) {
-      return "Invalid user!!";
+    //const userData = await Users.findOne({ _id });
+    result.message = "";
+    result.userInfo = "";
+    result.error = "";
+    const userData = await Users.find({
+      $and: [{ _id: _id }, { email: email }],
+    });
+    if (!userData || userData.length === 0) {
+      result.error = "User does not exists for logged in user!!";
+      return result;
     } else {
       if (password === rpassword) {
         const editUser = new Users({
           username: username,
           email: userData.email,
           password: password,
-          rpassword: rpassword
+          rpassword: rpassword,
         });
 
         password = await bcrypt.hash(password, 10);
@@ -58,13 +65,15 @@ async function editUser(_id, username, password, rpassword) {
           {
             username: editUser.username,
             password: password,
-            rpassword: rpassword
+            rpassword: rpassword,
           },
           {
-            new: true
+            new: true,
           }
         );
-        return getupdatedusers;
+        result.userInfo = getupdatedusers;
+        result.message = "User updated successfully!!";
+        return result;
       }
     }
   } catch (error) {
@@ -111,10 +120,10 @@ async function createAvatar(email, avatarUrl) {
     const updatedUserData = await Users.updateOne(
       { email: email },
       {
-        avatarUrl: avatarUrl
+        avatarUrl: avatarUrl,
       },
       {
-        new: true
+        new: true,
       }
     );
     return updatedUserData;
@@ -140,5 +149,5 @@ module.exports = {
   getUsers,
   getUsersById,
   createAvatar,
-  getAvatar
+  getAvatar,
 };
